@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+body {
+  font-family: "Outfit", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+
+:root {
+  --color-primary: #5f6fff;
+  --color-secondary: #22c55e;
+}
+@theme {
+  --color-primary: #4f5fff;
+  --color-secondary: #22c55e;
+}
+
+.active hr {
+  @apply block;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.element {
+  transition: all 0.3s ease;
+}
+
+.element:hover {
+  transform: scale(1.05) rotate(0deg) translate(0px, -5px) skewX(0deg);
+  box-shadow: 0 15px 20px rgba(0, 0, 0, 0.3);
+  opacity: 1;
+  filter: brightness(1);
+  background-color: #ffffff;
+  color: #808080;
+}
+@media (max-width:740px){
+  .active p{
+    @apply text-white bg-primary
+  }
+}
