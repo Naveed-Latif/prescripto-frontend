@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
 function Navbar() {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [token, setToken] = useState<boolean>(true);
   const [showMenu, setShowMenu] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const {token,setToken,userData} = useContext(AppContext);
+
+  const logOut = () => {
+    setToken('');
+    localStorage.removeItem("token");
+    navigate("/");
+  }
 
   return (
     <div className="flex items-center justify-between text-sm py-4 mb-5 border-b border-b-gray-300">
@@ -39,12 +46,12 @@ function Navbar() {
       </ul>
 
       <div className="flex items-center gap-4">
-        {token ? (
+        {token && token.length > 0 ? (
           <div>
             <div className="flex items-center gap-2 group relative cursor-pointer">
               <img
                 className="w-8 rounded-full"
-                src="/src/assets/profile_pic.png"
+                src={userData?.profileImage || "/src/assets/profile_pic.png"}
                 alt="User Icon"
               />
               <img
@@ -67,7 +74,7 @@ function Navbar() {
                     My Appointments
                   </p>
                   <p
-                    onClick={() => setToken(false)}
+                    onClick={logOut}
                     className="hover:text-black cursor-pointer"
                   >
                     Logout
