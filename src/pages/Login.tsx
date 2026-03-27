@@ -32,7 +32,6 @@ export default function Login() {
       if (response.data.success) {
         localStorage.setItem("token", response.data.token);
         setToken(response.data.token);
-        console.log(response.data);
         toast.success("Login successful");
       } else {
         toast.error("Invalid credentials")

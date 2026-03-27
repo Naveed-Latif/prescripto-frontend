@@ -1,7 +1,10 @@
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AppContext } from "../context/AppContext";
 
 function Banner() {
   const navigate = useNavigate();
+  const { token } = useContext(AppContext);
   return (
     <div>
       <div className="flex bg-primary rounded-lg px-10 md:px-14 lg:px-10 my-20 md:mx-10">
@@ -14,12 +17,12 @@ function Banner() {
 
           <button
             onClick={() => {
-              navigate('/createaccount');
+              token ? navigate('/doctors') : navigate('/createaccount');
               scrollTo(0, 0);
             }}
             className=" bg-white px-8 py-3 mt-3 rounded-full text-[#595959] text-sm hover:scale-105 transition-all duration-300 hover:bg-indigo-50 "
           >
-            Create Account
+            {token ? "Book Appointment" : "Create Account"}
           </button>
         </div>
         {/* Right Side */}

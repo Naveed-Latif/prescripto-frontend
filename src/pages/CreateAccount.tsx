@@ -32,25 +32,25 @@ export default function CreateAccount() {
       formData.append("password", formdata.password);
       formData.append("confirm_password", formdata.confirmPassword);
 
-     const response = await axios.post(`${backendurl}/auth/signup`, formData);
-     if(response.data.success){
-      localStorage.setItem("token", response.data.token);
-      setToken(response.data.token);
-      toast.success("Account created successfully");
-     }else{
-      toast.error(response.data.message);
-     }
+      const response = await axios.post(`${backendurl}/auth/signup`, formData);
+      if (response.data.success) {
+        localStorage.setItem("token", response.data.token);
+        setToken(response.data.token);
+        toast.success("Account created successfully");
+      } else {
+        toast.error(response.data.message);
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         // toast.error(error.message);
       }
     }
   };
-  useEffect(()=>{
-      if(token && token.length > 0){
-        navigate("/");
-      }
-    },[token])
+  useEffect(() => {
+    if (token && token.length > 0) {
+      navigate("/");
+    }
+  }, [token]);
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center bg-white ">

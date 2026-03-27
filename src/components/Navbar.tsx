@@ -43,6 +43,7 @@ function Navbar() {
           <li className="py-1">CONTACT</li>
           <hr className="border-none outline-none h-0.5 bg-primary w-3/4 m-auto hidden" />
         </NavLink>
+        <a target="_blank" className="border border-gray-300 px-5 text-xs py-1.5 rounded-full" href="http://localhost:5173/">Admin Panel</a>
       </ul>
 
       <div className="flex items-center gap-4">
