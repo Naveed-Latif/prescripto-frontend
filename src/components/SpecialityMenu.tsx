@@ -1,5 +1,18 @@
 import { Link } from "react-router-dom";
 import { specialityData } from "../assets/assets.ts";
+
+const LABEL_TO_VALUE: Record<string, string> = {
+  "General physician": "GeneralPhysician",
+  Gynecologist: "Gynecologist",
+  Dermatologist: "Dermatologist",
+  Pediatrician: "Pediatrician",
+  Neurologist: "Neurologist",
+  Gastroenterologist: "Gastroenterologist",
+  Psychologist: "Psychologist",
+  Cardiologist: "Cardiologist",
+  "Orthopedic Surgeon": "OrthopedicSurgeon",
+};
+
 function SpecialityMenu() {
   return (
     <div
@@ -17,7 +30,7 @@ function SpecialityMenu() {
             onClick={() => scrollTo(0, 0)}
             className="flex flex-col items-center text-xs cursor-pointer shrink-0 hover:-translate-y-2.5 transition-all duration-500"
             key={index}
-            to={`/doctors/${item.speciality}`}
+            to={`/doctors?speciality=${LABEL_TO_VALUE[item.speciality] ?? item.speciality}`}
           >
             <img className="w-16 sm:w-24 mb-2" src={item.image} alt="" />
             <p>{item.speciality}</p>

@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -47,7 +47,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     null,
   );
 
-  const loadUserData = async () => {
+  const loadUserData = useCallback(async () => {
     try {
       const response = await axios.get(`${backendurl}/view-profile`, {
         headers: {
@@ -76,72 +76,85 @@ export const AppProvider = ({ children }: AppProviderProps) => {
       }
       toast.error("Something went wrong. Please try again.");
     }
-  };
+  }, [token]);
 
-  const loadDoctors = async (page: number = 1, filters?: DoctorFilters) => {
-    try {
-      const params = new URLSearchParams();
-      params.set("page", String(page));
+  const loadDoctors = useCallback(
+    async (page: number = 1, filters?: DoctorFilters) => {
+      try {
+        const params = new URLSearchParams();
+        params.set("page", String(page));
 
-      if (filters) {
-        if (filters.specialties && filters.specialties.length > 0) {
-          params.set("specialties", filters.specialties.join(","));
+        if (filters) {
+          if (filters.specialties && filters.specialties.length > 0) {
+            params.set("specialties", filters.specialties.join(","));
+          }
+          if (filters.min_fee !== undefined) {
+            params.set("min_fee", String(filters.min_fee));
+          }
+          if (filters.max_fee !== undefined) {
+            params.set("max_fee", String(filters.max_fee));
+          }
+          if (filters.min_rating !== undefined) {
+            params.set("min_rating", String(filters.min_rating));
+          }
+          if (filters.max_rating !== undefined) {
+            params.set("max_rating", String(filters.max_rating));
+          }
+          if (filters.gender) {
+            params.set("gender", filters.gender);
+          }
+          if (filters.sort_by) {
+            params.set("sort_by", filters.sort_by);
+          }
+          if (filters.name) {
+            params.set("name", filters.name);
+          }
         }
-        if (filters.min_fee !== undefined) {
-          params.set("min_fee", String(filters.min_fee));
-        }
-        if (filters.max_fee !== undefined) {
-          params.set("max_fee", String(filters.max_fee));
-        }
-        if (filters.min_rating !== undefined) {
-          params.set("min_rating", String(filters.min_rating));
-        }
-        if (filters.max_rating !== undefined) {
-          params.set("max_rating", String(filters.max_rating));
-        }
-        if (filters.gender) {
-          params.set("gender", filters.gender);
-        }
-        if (filters.sort_by) {
-          params.set("sort_by", filters.sort_by);
-        }
-        if (filters.name) {
-          params.set("name", filters.name);
-        }
-      }
 
-      const response = await axios.get(
-        `${backendurl}/doctors?${params.toString()}`,
-      );
-      if (response.data.status === 200) {
-        setDoctors(response.data.doctors);
-        if (response.data.pagination) {
-          setDoctorsPagination(response.data.pagination);
+        const response = await axios.get(
+          `${backendurl}/doctors?${params.toString()}`,
+        );
+        if (response.data.status === 200) {
+          setDoctors(response.data.doctors);
+          if (response.data.pagination) {
+            setDoctorsPagination(response.data.pagination);
+          }
+        } else {
+          toast.error("Failed to load doctors");
+          console.log(response);
         }
-      } else {
-        toast.error("Failed to load doctors");
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error("Error:", error.message);
+        } else {
+          console.error("Error:", String(error));
+        }
+        toast.error("Something went wrong. Please try again.");
       }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error("Error:", error.message);
-      } else {
-        console.error("Error:", String(error));
-      }
-      toast.error("Something went wrong. Please try again.");
-    }
-  };
+    },
+    [],
+  );
 
   useEffect(() => {
     if (token && token.length > 0) {
-      loadUserData();
+      const fetchUser = async () => {
+        await loadUserData();
+      };
+      fetchUser();
     } else {
-      setUserData(null);
+      const fetchUser = () => {
+        setUserData(null);
+      };
+      fetchUser();
     }
-  }, [token]);
+  }, [token, loadUserData]);
 
   useEffect(() => {
-    loadDoctors();
-  }, []);
+    const fetchDoctors = async () => {
+      await loadDoctors();
+    };
+    fetchDoctors();
+  }, [loadDoctors]);
 
   const value = {
     doctors,

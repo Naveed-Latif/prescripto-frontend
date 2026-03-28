@@ -11,6 +11,7 @@ export interface DoctorProfile {
   phone: string | null;
   role: "DOCTOR";
   dateOfBirth: string | null;
+  deletedAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -24,6 +25,8 @@ export interface Doctor {
   fee: number;
   about: string;
   isActive: boolean;
+  ratingAverage: number;
+  totalReviews: number;
   createdAt: string;
   updatedAt: string;
   profile: DoctorProfile;
@@ -33,7 +36,9 @@ export interface Address {
   line1: string;
   line2?: string;
   city: string;
+  state: string;
   country: string;
+  postalCode: string;
 }
 
 export interface UserData {
@@ -98,4 +103,27 @@ export interface DoctorFilters {
   gender?: "MALE" | "FEMALE";
   sort_by?: "newly" | "alphabetically";
   name?: string;
+}
+
+export interface ReviewPerson {
+  name: string;
+  profileImage: string | null;
+  profileColor: string;
+}
+
+export interface Review {
+  id: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+  patient: ReviewPerson;
+  doctor: ReviewPerson;
+}
+
+export interface ReviewResponse {
+  status: number;
+  averageRating: number;
+  totalReviews: number;
+  reviews: Review[];
+  pagination: Pagination;
 }

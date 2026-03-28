@@ -5,6 +5,8 @@ import type { Doctor } from "../Types.ts";
 import RelatedDoctors from "../components/RelatedDoctors.tsx";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Reviews from "../components/Reviews.tsx";
+
 // import BookingSlots from '../components/BookingSlots.tsx'
 type Slot = { datetime: Date; time: string };
 
@@ -66,7 +68,9 @@ function Appointment() {
         toast.error("Failed to book appointment");
       }
     } catch (error) {
-      toast.error("An error occurred while booking");
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data.message);
+      }
     }
   };
 
@@ -131,13 +135,15 @@ function Appointment() {
     docInfo && (
       <div>
         <div className="flex flex-col md:flex-row gap-4">
-          <img
-            className="bg-primary w-full md:max-w-72 rounded-lg"
-            src={docInfo.profile.profileImage ?? "/src/assets/dummy_doc.png"}
-            alt=""
-          />
           <div className="flex-1 flex-col gap-4 p-7 py-8 text-sm bg-white rounded-lg border border-gray-300">
             <div className="flex items-center gap-2">
+              <img
+                className="bg-primary w-14 h-14 rounded-full"
+                src={
+                  docInfo.profile.profileImage ?? "/src/assets/dummy_doc.png"
+                }
+                alt=""
+              />
               <p className="text-gray-700 text-3xl font-medium">
                 {docInfo.profile.name}
               </p>
@@ -148,9 +154,13 @@ function Appointment() {
                 {docInfo.degree}-{docInfo.specialty}
               </p>
               <button className="border border-gray-400 py-0.5 px-2 text-xs rounded-full">
-                {docInfo.experience}
+                {docInfo.experience} years
+              </button>
+              <button className="border border-gray-400 py-0.5 px-2 text-xs rounded-full">
+                {docInfo.ratingAverage ?? 0} ⭐
               </button>
             </div>
+
             <div className="">
               <p className="flex gap-2 text-sm font-medium">
                 About{" "}
@@ -168,9 +178,12 @@ function Appointment() {
               </span>
             </p>
           </div>
+          <div className="flex-1 flex-col md:max-w-100 text-sm bg-white rounded-lg">
+            {id && <Reviews id={id} />}
+          </div>
         </div>
         {/* <BookingSlots/> */}
-        <div className="sm:ml-72 sm:pl-4 mt-4 font-medium text-gray-700">
+        <div className="sm:ml-4 sm:pl-4 mt-4 font-medium text-gray-700">
           <p>Booking Slots</p>
           <div className="flex gap-2 items-center overflow-x-scroll w-full mt-4 ">
             {docSlots.length &&
@@ -199,7 +212,7 @@ function Appointment() {
           </div>
           <button
             onClick={bookAppointment}
-            className="bg-primary text-white text-sm font-light px-20 py-3 rounded-full my-6"
+            className="bg-primary text-white text-sm font-light px-20 py-3 cursor-pointer rounded-full my-6"
           >
             Book Appointment
           </button>

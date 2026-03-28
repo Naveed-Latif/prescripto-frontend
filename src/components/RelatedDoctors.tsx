@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
-import { useNavigate } from "react-router-dom";
-
+import DoctorCard from "./DoctorCard";
 
 interface RelatedDocProps {
   docId: string | undefined;
@@ -9,44 +8,25 @@ interface RelatedDocProps {
 }
 
 function RelatedDoctors({ docId, speciality }: RelatedDocProps) {
-    const navigate = useNavigate()
   const { doctors } = useContext(AppContext);
   const relatedDoc = doctors.filter(
     (doc) => doc.specialty === speciality && doc.id !== Number(docId),
   );
 
   return (
-  <div>
-    <div className="flex flex-col items-center gap-4 my-16 text-gray-900 md:mx-10 ">
+    <div>
+      <div className="flex flex-col items-center gap-4 my-16 text-gray-900 md:mx-10 ">
         <h1 className="text-3xl font-medium">Related Doctors</h1>
         <p className="md:w-1/3 text-sm text-center text-gray-500">
-         Simply browse through our extensive list of trusted doctors.
+          Simply browse through our extensive list of trusted doctors.
         </p>
         <div className="w-full grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 pt-5 gap-y-6 px-3 sm:px-0 ">
-          {relatedDoc.slice(0,5).map((doctor, index) => (
-            <div
-                onClick={() => {navigate(`/appointment/${doctor.id}`); scrollTo(0,0)}}
-              key={index}
-              className="border-[#C9D8FF] border rounded-xl overflow-hidden cursor-pointer hover:-translate-y-2.5 translate-all duration-300"
-            >
-              <img className="bg-blue-50" src={doctor.profile.profileImage ?? "/src/assets/dummy_doc.png"} alt="" />
-              <div className="p-4">
-                <div className="flex gap-2 items-center text-green-500 text-center text-sm">
-                  <p className="w-2 h-2 rounded-full bg-green-500"></p>
-                  <p>Available</p>
-                </div>
-                <p className="text-gray-900 font-medium text-lg">
-                  {doctor.profile.name}
-                </p>
-                <p className="text-xs text-gray-600">{doctor.specialty}</p>
-              </div>
-            </div>
+          {relatedDoc.slice(0, 5).map((doctor) => (
+            <DoctorCard key={doctor.id} doctor={doctor} />
           ))}
         </div>
-        
       </div>
-
-  </div>
+    </div>
   );
 }
 

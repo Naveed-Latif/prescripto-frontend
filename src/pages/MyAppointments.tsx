@@ -46,7 +46,9 @@ function MyAppointments() {
     }
 
     try {
-      const response = await axios.post(`${backendurl}/appointments/${id}`,{}, {
+      const response = await axios.post(`${backendurl}/appointments/${id}`,{
+        action:"cancel"
+      }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -69,7 +71,11 @@ function MyAppointments() {
   };
 
   useEffect(() => {
-    fetchAppointments();
+    const fetchAppoinmtent = async () => {
+      await fetchAppointments();
+    }
+    fetchAppoinmtent();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
 
   return (

@@ -24,7 +24,6 @@ function AppLayout() {
         <Route path="/appointment/:id" element={<Appointment />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/doctors" element={<Doctors />} />
-        <Route path="/doctors/:speciality" element={<Doctors />} />
         <Route path="/login" element={<Login />} />
         <Route path="/createaccount" element={<CreateAccount />} />
         <Route path="/myprofile" element={<MyProfile />} />
