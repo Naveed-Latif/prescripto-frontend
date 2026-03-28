@@ -183,7 +183,7 @@ function Appointment() {
           </div>
         </div>
         {/* <BookingSlots/> */}
-        <div className="sm:ml-4 sm:pl-4 mt-4 font-medium text-gray-700">
+        <div className="sm:ml-2 sm:pl-4 mt-4 font-medium w-[579px] text-gray-700">
           <p>Booking Slots</p>
           <div className="flex gap-2 items-center overflow-x-scroll w-full mt-4 ">
             {docSlots.length &&

@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import ProfileSkeleton from "../skelton/ProfileSkelton";
 
 type Profile = {
   name: string;
@@ -21,7 +22,7 @@ export default function MyProfile() {
   const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageFileRef = useRef<File | null>(null);
-  const { userData, setUserData, token, backendurl } = useContext(AppContext);
+  const { userData, setUserData, token, backendurl,ProLoading } = useContext(AppContext);
 
   // Helper: pull first address from userData
   const firstAddr = userData?.addresses?.[0];
@@ -145,6 +146,10 @@ export default function MyProfile() {
   ].filter(Boolean);
   const addressDisplay =
     addressParts.length > 0 ? addressParts.join(", ") : "—";
+
+    if(ProLoading){
+      return <ProfileSkeleton />
+    }
 
   return (
     userData && (

@@ -2,10 +2,11 @@ import { useContext } from "react";
 import { AppContext } from "../context/AppContext.tsx";
 import { useNavigate } from "react-router-dom";
 import DoctorCard from "./DoctorCard.tsx";
+import DoctorCardSkeleton from "../skelton/DoctorCardSkeleton.tsx";
 
 function TopDoctors() {
   const navigate = useNavigate();
-  const { doctors } = useContext(AppContext);
+  const { doctors,docLoading } = useContext(AppContext);
   return (
     <div>
       <div className="flex flex-col items-center gap-4 my-16 text-gray-900 md:mx-10 ">
@@ -14,9 +15,15 @@ function TopDoctors() {
           Simply browse through our extensive list of trusted doctors.
         </p>
         <div className="w-full grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 pt-5 gap-y-6 px-3 sm:px-0 ">
-          {doctors.slice(0, 10).map((doctor) => (
-            <DoctorCard key={doctor.id} doctor={doctor} />
-          ))}
+          {docLoading ? (
+            Array.from({ length: 10 }).map((_, index) => (
+              <DoctorCardSkeleton key={index} />
+            ))
+          ) : (
+            doctors.slice(0, 10).map((doctor) => (
+              <DoctorCard key={doctor.id} doctor={doctor} />
+            ))
+          )}
         </div>
         <button
           onClick={() => {

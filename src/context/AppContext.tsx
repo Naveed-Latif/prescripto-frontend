@@ -19,6 +19,8 @@ interface AppContextType {
   userData: UserData | null;
   setUserData: Dispatch<SetStateAction<UserData | null>>;
   loadUserData: () => Promise<void>;
+  docLoading:boolean
+  ProLoading:boolean
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -33,6 +35,9 @@ export const AppContext = createContext<AppContextType>({
   userData: null,
   setUserData: () => {},
   loadUserData: async () => {},
+  docLoading:true,
+  ProLoading:true,
+  
 });
 
 interface AppProviderProps {
@@ -46,6 +51,9 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   const [doctorsPagination, setDoctorsPagination] = useState<Pagination | null>(
     null,
   );
+  const [docLoading,setDocLoading] = useState<boolean>(true)
+  const [ProLoading, setProLoading] = useState<boolean>(true)
+  
 
   const loadUserData = useCallback(async () => {
     try {
@@ -75,6 +83,8 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         console.error("Error:", String(error));
       }
       toast.error("Something went wrong. Please try again.");
+    }finally{
+      setProLoading(false)
     }
   }, [token]);
 
@@ -130,6 +140,8 @@ export const AppProvider = ({ children }: AppProviderProps) => {
           console.error("Error:", String(error));
         }
         toast.error("Something went wrong. Please try again.");
+      }finally{
+        setDocLoading(false)
       }
     },
     [],
@@ -167,6 +179,8 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     userData,
     setUserData,
     loadUserData,
+    docLoading,
+    ProLoading
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

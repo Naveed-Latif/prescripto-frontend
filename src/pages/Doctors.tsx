@@ -5,6 +5,7 @@ import type { DoctorFilters } from "../Types.ts";
 import DoctorCard from "../components/DoctorCard.tsx";
 import Pagination from "../components/Pagination.tsx";
 import DoctorFiltersPanel from "../components/DoctorFiltersPanel.tsx";
+import DoctorCardSkeleton from "../skelton/DoctorCardSkeleton.tsx";
 
 // ─── Specialties: used only for homepage label → API value normalisation
 const SPECIALTY_LABEL_MAP: Record<string, string> = {
@@ -24,7 +25,7 @@ const SPECIALTY_LABEL_MAP: Record<string, string> = {
 // ═════════════════════════════════════════════════════════════
 function Doctors() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { doctors, doctorsPagination, loadDoctors } = useContext(AppContext);
+  const { doctors, doctorsPagination, loadDoctors,docLoading } = useContext(AppContext);
 
   // ── Derive filter state from URL ──────────────────────────
   const selectedSpecialties =
@@ -147,9 +148,15 @@ function Doctors() {
         {/* ─── Doctor Cards + Pagination ──────────────── */}
         <div className="w-full flex flex-col gap-6">
           <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 gap-y-6">
-            {doctors.map((doctor) => (
-              <DoctorCard key={doctor.id} doctor={doctor} />
-            ))}
+            {docLoading ? (
+              Array.from({ length: 10 }).map((_, index) => (
+                <DoctorCardSkeleton key={index} />
+              ))
+            ) : (
+              doctors.map((doctor) => (
+                <DoctorCard key={doctor.id} doctor={doctor} />
+              ))
+            )}
           </div>
 
           {/* ─── Pagination Bar ────────────────────────── */}

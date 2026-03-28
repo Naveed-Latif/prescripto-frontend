@@ -4,11 +4,39 @@ import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import type { Appointment } from "../Types";
+import AppointmentsSkeleton from "../skelton/AppointmentsSkeleton";
+import FeedbackModal from "../components/FeedbackModal";
 
 function MyAppointments() {
   const { backendurl, token } = useContext(AppContext);
   const location = useLocation();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [feedbackAppointmentId, setFeedbackAppointmentId] = useState<
+    number | null
+  >(null);
+
+  const submitFeedback = async (rating: number, comment: string) => {
+    if (!token || !feedbackAppointmentId) return;
+    try {
+      const response = await axios.post(
+        `${backendurl}/reviews`,
+        {
+          appointmentId: feedbackAppointmentId,
+          rating: rating,
+          comment: comment,
+        },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      if (response.data.status === 200) {
+        toast.success("Feedback submitted successfully");
+      } else {
+        toast.error("Failed to submit feedback");
+      }
+    } catch {
+      toast.error("An error occurred while submitting feedback");
+    }
+  };
   // fetch appointments from backend
   const fetchAppointments = async () => {
     if (!token) {
@@ -30,15 +58,17 @@ function MyAppointments() {
         toast.error("Failed to fetch appointments");
       }
     } catch (error) {
-      if(error instanceof Error){
+      if (error instanceof Error) {
         console.error("Error:", error.message);
-      }else{
+      } else {
         console.error("Error:", String(error));
       }
       toast.error("An error occurred while fetching appointments");
+    } finally {
+      setLoading(false);
     }
   };
-// cancel appointment
+  // cancel appointment
   const cancelAppointment = async (id: number) => {
     if (!token) {
       toast.warning("Please login to cancel an appointment");
@@ -46,13 +76,17 @@ function MyAppointments() {
     }
 
     try {
-      const response = await axios.post(`${backendurl}/appointments/${id}`,{
-        action:"cancel"
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await axios.post(
+        `${backendurl}/appointments/${id}`,
+        {
+          action: "cancel",
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
       if (response.data.status == 200) {
         toast.success("Appointment cancelled successfully");
@@ -61,9 +95,9 @@ function MyAppointments() {
         toast.error("Failed to cancel appointment");
       }
     } catch (error) {
-      if(error instanceof Error){
+      if (error instanceof Error) {
         console.error("Error:", error.message);
-      }else{
+      } else {
         console.error("Error:", String(error));
       }
       toast.error("An error occurred while cancelling appointment");
@@ -73,11 +107,13 @@ function MyAppointments() {
   useEffect(() => {
     const fetchAppoinmtent = async () => {
       await fetchAppointments();
-    }
+    };
     fetchAppoinmtent();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
-
+  if (loading) {
+    return <AppointmentsSkeleton />;
+  }
   return (
     <div>
       <p className="pb-3 mt-10 text-lg text-gray-600 border-b border-b-gray-400">
@@ -100,8 +136,21 @@ function MyAppointments() {
             />
           </div>
           <div className="flex-1 text-sm text-[#5E5E5E]">
-            <p className="text-base text-[#262626] font-semibold">
+            <p className="text-base text-[#262626] font-semibold flex items-center gap-2">
               {appointment.doctor.profile.name}
+              {appointment.isCancel ? (
+                <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-red-50 text-red-500 border border-red-200">
+                  Cancelled
+                </span>
+              ) : new Date(appointment.appointmentDate) < new Date() ? (
+                <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-green-50 text-green-600 border border-green-200">
+                  Completed
+                </span>
+              ) : (
+                <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-yellow-50 text-yellow-600 border border-yellow-200">
+                  Pending
+                </span>
+              )}
             </p>
             <p>{appointment.doctor.specialty}</p>
             <p className="text-[#262626] font-medium mt-1">Address:</p>
@@ -121,9 +170,14 @@ function MyAppointments() {
           </div>
           <div></div>
           <div className="flex flex-col justify-end gap-2">
-            {appointment.isCancel ? (
-              <button className="text-sm text-red-600 border border-red-600 p-2 sm:min-w-46 cursor-pointer hover:bg-red-600 hover:text-white transition-all duration-300">
-                Cancelled
+            {appointment.isCancel ? null : new Date(
+                appointment.appointmentDate,
+              ) < new Date() ? (
+              <button
+                onClick={() => setFeedbackAppointmentId(appointment.id)}
+                className="text-sm text-white bg-green-500 rounded-lg p-2 sm:min-w-46 cursor-pointer hover:bg-green-600 transition-all duration-300"
+              >
+                Give Feedback
               </button>
             ) : (
               <>
@@ -147,6 +201,11 @@ function MyAppointments() {
           </div>
         </div>
       ))}
+      <FeedbackModal
+        isOpen={feedbackAppointmentId !== null}
+        onClose={() => setFeedbackAppointmentId(null)}
+        onSubmit={submitFeedback}
+      />
     </div>
   );
 }
