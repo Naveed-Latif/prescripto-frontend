@@ -20,7 +20,7 @@ function DoctorCard({ doctor }: DoctorCardProps) {
       }}
       className="border-[#C9D8FF] border rounded-xl overflow-hidden cursor-pointer hover:-translate-y-2.5 transition-all duration-300"
     >
-      <div className="relative">
+      <div className="relativeh-48 sm:h-52 md:h-56 lg:h-60 xl:h-64 w-full overflow-hidden bg-blue-50">
         <img
           className="bg-blue-50 w-full"
           src={doctor.profile.profileImage ?? "/src/assets/dummy_doc.png"}

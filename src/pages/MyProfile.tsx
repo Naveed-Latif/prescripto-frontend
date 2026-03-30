@@ -116,6 +116,14 @@ export default function MyProfile() {
     setDraft(buildDraft());
     setIsEditing(false);
   };
+  const formatPhoneDisplay = (raw: string) => {
+  const digits = raw.replace(/\D/g, ''); 
+  const country = digits.slice(0, 2);    
+  const area = digits.slice(2, 5);       
+  const first = digits.slice(5, 8);      
+  const last = digits.slice(8);          
+  return `+${country} (${area}) ${first}-${last}`; 
+};
 
   const handleChange = (field: keyof Profile, value: string | null) => {
     setDraft((prev) => ({ ...prev, [field]: value }));
@@ -252,7 +260,7 @@ export default function MyProfile() {
               <PhoneInput
                 country={"pk"}
                 value={draft.phone.replace(/^\+/, "")}
-                onChange={(value) => handleChange("phone", "+" + value)}
+                onChange={(value) => handleChange("phone", formatPhoneDisplay("+" + value))}
                 masks={{ pk: "(...) ...-....", default: "(...) ...-...." }}
                 inputStyle={{
                   width: "256px",

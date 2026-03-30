@@ -68,10 +68,22 @@ export interface Appointment {
   patientId: number;
   doctorId: number;
   isCancel: boolean;
+  isCompleted: boolean;
+  isPaid: boolean;
+  canceledByUserId: number | null;
+  cancellationReason: string | null;
+  completedByUserId: number | null;
+  completionSummary: string | null;
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
   doctor: AppointmentDoctor;
-  isPaid: boolean;
+  reviews?:
+    | {
+        rating: number;
+        comment: string;
+        createdAt: string;
+      }[]
+    | null;
 }
 
 export interface AppointmentDoctor {

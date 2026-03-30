@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useContext } from "react";
 import { AppContext } from "../context/AppContext";
 import ReviewCard from "./ReviewCard";
+import ReviewsSkeleton from "../skelton/ReviewsSkeleton.tsx";
 
 
 
@@ -45,7 +46,7 @@ const Reviews = ({ id }: { id: string }) => {
     fetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-
+if (loading) return <ReviewsSkeleton />
   return (
     <div className="border border-gray-200 rounded-2xl p-6 max-h-[350px] overflow-y-auto scroll-smooth">
       {/* Header */}
@@ -63,11 +64,7 @@ const Reviews = ({ id }: { id: string }) => {
       </div>
 
       {/* Reviews List */}
-      {loading ? (
-        <p className="text-sm text-gray-400 text-center py-10">
-          Loading reviews...
-        </p>
-      ) : reviews.length === 0 ? (
+      {reviews.length === 0 ? (
         <p className="text-sm text-gray-400 text-center py-10">
           No reviews yet.
         </p>

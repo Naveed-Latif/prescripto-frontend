@@ -1,32 +1,36 @@
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import type { Doctor } from "../Types.ts";
 import RelatedDoctors from "../components/RelatedDoctors.tsx";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Reviews from "../components/Reviews.tsx";
+import AppointmentDetailSkeleton from "../skelton/AppointmentDetailSkeleton.tsx";
 
 // import BookingSlots from '../components/BookingSlots.tsx'
 type Slot = { datetime: Date; time: string };
 
 const formatAppointmentDate = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
+  // Use getUTC methods so the server saves it correctly as UTC
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  const hours = String(date.getUTCHours()).padStart(2, "0");
+  const minutes = String(date.getUTCMinutes()).padStart(2, "0");
   return `${year}-${month}-${day} ${hours}:${minutes}`;
 };
 
 function Appointment() {
   const [docInfo, setDocInfo] = useState<Doctor>();
-  const { doctors, currencySymbol, backendurl, token } = useContext(AppContext);
+  const { doctors, currencySymbol, backendurl, token ,docLoading } = useContext(AppContext);
   const { id } = useParams();
   const [docSlots, SetDocSlots] = useState<Slot[][]>([]);
   const [slotIndex, SetSlotIndex] = useState<number>(0);
   const [slotTime, SetSlotTime] = useState<string>("");
   const daysOfTheWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
+  const navigate = useNavigate();
 
   const bookAppointment = async () => {
     if (!token) {
@@ -64,12 +68,14 @@ function Appointment() {
 
       if (response.data.status == 200) {
         toast.success("Appointment booked successfully");
+        navigate("/myappointments");
       } else {
         toast.error("Failed to book appointment");
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data.message);
+        const message = error.response?.data?.error;
+        toast.error(message || "Failed to book appointment");
       }
     }
   };
@@ -130,6 +136,10 @@ function Appointment() {
     };
     getAvailableSlots();
   }, []);
+
+  if (docLoading) {
+    return <AppointmentDetailSkeleton />;
+  }
 
   return (
     docInfo && (
