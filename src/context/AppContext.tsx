@@ -95,30 +95,20 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         params.set("page", String(page));
 
         if (filters) {
-          if (filters.specialties && filters.specialties.length > 0) {
-            params.set("specialties", filters.specialties.join(","));
-          }
-          if (filters.min_fee !== undefined) {
-            params.set("min_fee", String(filters.min_fee));
-          }
-          if (filters.max_fee !== undefined) {
-            params.set("max_fee", String(filters.max_fee));
-          }
-          if (filters.min_rating !== undefined) {
-            params.set("min_rating", String(filters.min_rating));
-          }
-          if (filters.max_rating !== undefined) {
-            params.set("max_rating", String(filters.max_rating));
-          }
-          if (filters.gender) {
-            params.set("gender", filters.gender);
-          }
-          if (filters.sort_by) {
-            params.set("sort_by", filters.sort_by);
-          }
-          if (filters.name) {
-            params.set("name", filters.name);
-          }
+          if (filters.name) params.set("name", filters.name);
+          if (filters.gender) params.set("gender", filters.gender);
+          if (filters.specialties?.length) params.set("specialties", filters.specialties.join(",")); // ✅ comma separated
+          if (filters.min_fee !== undefined) params.set("min_fee", String(filters.min_fee));
+          if (filters.max_fee !== undefined) params.set("max_fee", String(filters.max_fee));
+          if (filters.min_rating !== undefined) params.set("min_rating", String(filters.min_rating));
+          if (filters.max_rating !== undefined) params.set("max_rating", String(filters.max_rating));
+          if (filters.min_experience !== undefined) params.set("min_experience", String(filters.min_experience));
+          if (filters.max_experience !== undefined) params.set("max_experience", String(filters.max_experience));
+          if (filters.consultation_type) params.set("consultation_type", filters.consultation_type);
+          if (filters.join_from_date) params.set("join_from_date", filters.join_from_date);
+          if (filters.join_to_date) params.set("join_to_date", filters.join_to_date);
+          if (filters.sort_by) params.set("sort_by", filters.sort_by);
+          if (filters.has_appointments) params.set("has_appointments", "true");
         }
 
         const response = await axios.get(

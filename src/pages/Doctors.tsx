@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext.tsx";
-import type {  DoctorFilters } from "../Types.ts";
+import type { DoctorFilters } from "../Types.ts";
 import DoctorCard from "../components/DoctorCard.tsx";
 import Pagination from "../components/Pagination.tsx";
 import DoctorFiltersPanel from "../components/DoctorFiltersPanel.tsx";
@@ -25,7 +25,8 @@ const SPECIALTY_LABEL_MAP: Record<string, string> = {
 // ═════════════════════════════════════════════════════════════
 function Doctors() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { doctors, doctorsPagination, loadDoctors,docLoading } = useContext(AppContext);
+  const { doctors, doctorsPagination, loadDoctors, docLoading } =
+    useContext(AppContext);
 
   // ── Derive filter state from URL ──────────────────────────
   const selectedSpecialties =
@@ -33,7 +34,7 @@ function Doctors() {
   const minFee = Number(searchParams.get("minFee") ?? 0);
   const maxFee = Number(searchParams.get("maxFee") ?? 500);
   const feeRange: [number, number] = [minFee, maxFee];
-  const minRating = Number(searchParams.get("minRating") ?? 1);
+  const minRating = Number(searchParams.get("minRating") ?? 0);
   const maxRating = Number(searchParams.get("maxRating") ?? 5);
   const ratingRange: [number, number] = [minRating, maxRating];
   const gender = (searchParams.get("gender") ?? "") as "MALE" | "FEMALE" | "";
@@ -42,6 +43,18 @@ function Doctors() {
     | "alphabetically"
     | "";
   const currentPage = Number(searchParams.get("page") ?? 1);
+  // Add these to the derived filter state section
+  const minExperience = Number(searchParams.get("minExperience") ?? 0);
+  const maxExperience = Number(searchParams.get("maxExperience") ?? 30);
+  const experienceRange: [number, number] = [minExperience, maxExperience];
+  const consultationType = (searchParams.get("consultationType") ?? "") as
+    | "online"
+    | "clinic"
+    | "";
+  const joinFromDate = searchParams.get("joinFromDate") ?? "";
+  const joinToDate = searchParams.get("joinToDate") ?? "";
+  const hasAppointments = searchParams.get("hasAppointments") === "true";
+  const name = searchParams.get("name") ?? "";
 
   // ── Helper: update URL search params ──────────────────────
   const updateParams = (
@@ -86,17 +99,25 @@ function Doctors() {
   }, []); // intentionally run only on mount
 
   // ── Build filters object ──────────────────────────────────
+  // Update buildFilters()
   const buildFilters = (): DoctorFilters => {
-    const f: DoctorFilters = {};
-    if (selectedSpecialties.length > 0) f.specialties = selectedSpecialties;
-    if (feeRange[0] > 0) f.min_fee = feeRange[0];
-    if (feeRange[1] < 500) f.max_fee = feeRange[1];
-    if (ratingRange[0] > 1) f.min_rating = ratingRange[0];
-    if (ratingRange[1] < 10) f.max_rating = ratingRange[1];
-    if (gender) f.gender = gender;
-    if (sortBy) f.sort_by = sortBy;
-    return f;
-  };
+  const f: DoctorFilters = {};
+  if (selectedSpecialties.length > 0) f.specialties = selectedSpecialties;  // ✅ specialties not specialty
+  if (feeRange[0] > 0) f.min_fee = feeRange[0];
+  if (feeRange[1] < 500) f.max_fee = feeRange[1];
+  if (ratingRange[0] >= 1) f.min_rating = ratingRange[0];
+  if (ratingRange[1] < 5) f.max_rating = ratingRange[1];
+  if (experienceRange[0] > 0) f.min_experience = experienceRange[0];
+  if (experienceRange[1] < 30) f.max_experience = experienceRange[1];
+  if (consultationType) f.consultation_type = consultationType;
+  if (joinFromDate) f.join_from_date = joinFromDate;
+  if (joinToDate) f.join_to_date = joinToDate;
+  if (hasAppointments) f.has_appointments = true;
+  if (gender) f.gender = gender;
+  if (sortBy) f.sort_by = sortBy;
+  if (name) f.name = name;
+  return f;
+};
 
   // ── Fetch on page / filter change ─────────────────────────
   useEffect(() => {
@@ -142,21 +163,25 @@ function Doctors() {
             sortBy={sortBy}
             onParamsChange={(updates) => updateParams(updates)}
             onClearAll={() => setSearchParams({})}
+            experienceRange={experienceRange}
+            consultationType={consultationType}
+            joinFromDate={joinFromDate}
+            joinToDate={joinToDate}
+            hasAppointments={hasAppointments}
+            name={name}
           />
         </div>
 
         {/* ─── Doctor Cards + Pagination ──────────────── */}
         <div className="w-full flex flex-col gap-6">
           <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 gap-y-6">
-            {docLoading ? (
-              Array.from({ length: 10 }).map((_, index) => (
-                <DoctorCardSkeleton key={index} />
-              ))
-            ) : (
-              doctors.map((doctor) => (
-                <DoctorCard key={doctor.id} doctor={doctor} />
-              ))
-            )}
+            {docLoading
+              ? Array.from({ length: 10 }).map((_, index) => (
+                  <DoctorCardSkeleton key={index} />
+                ))
+              : doctors.map((doctor) => (
+                  <DoctorCard key={doctor.id} doctor={doctor} />
+                ))}
           </div>
 
           {/* ─── Pagination Bar ────────────────────────── */}

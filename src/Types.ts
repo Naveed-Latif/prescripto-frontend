@@ -108,14 +108,20 @@ export interface Pagination {
 }
 
 export interface DoctorFilters {
-  specialties?: string[];
+  name?: string;
+  gender?: string;
+  specialties?: string[];       // ✅ array — API joins as comma separated
   min_fee?: number;
   max_fee?: number;
   min_rating?: number;
   max_rating?: number;
-  gender?: "MALE" | "FEMALE";
-  sort_by?: "newly" | "alphabetically";
-  name?: string;
+  min_experience?: number;
+  max_experience?: number;
+  consultation_type?: 'online' | 'clinic' | '';
+  join_from_date?: string;
+  join_to_date?: string;
+  sort_by?: string;
+  has_appointments?: boolean;
 }
 
 export interface ReviewPerson {
