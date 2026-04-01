@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { AppContext } from "../context/AppContext";
+import { AppContext } from "../../context/AppContext";
 
 function Banner() {
   const navigate = useNavigate();
@@ -17,7 +17,11 @@ function Banner() {
 
           <button
             onClick={() => {
-              token ? navigate('/doctors') : navigate('/createaccount');
+              if (token) {
+                navigate("/doctors");
+              } else {
+                navigate("/createaccount");
+              }
               scrollTo(0, 0);
             }}
             className=" bg-white px-8 py-3 mt-3 rounded-full text-[#595959] text-sm hover:scale-105 transition-all duration-300 hover:bg-indigo-50 "

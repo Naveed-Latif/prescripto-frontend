@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { specialityData } from "../assets/assets.ts";
+import { specialityData } from "../../assets/assets";
 
 const LABEL_TO_VALUE: Record<string, string> = {
   "General physician": "GeneralPhysician",

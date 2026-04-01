@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { AppContext } from "../context/AppContext.tsx";
+import { AppContext } from "../../context/AppContext.tsx";
 import { useNavigate } from "react-router-dom";
-import DoctorCard from "./DoctorCard.tsx";
-import DoctorCardSkeleton from "../skelton/DoctorCardSkeleton.tsx";
+import DoctorCard from "../DoctorCard.tsx";
+import DoctorCardSkeleton from "../../skelton/DoctorCardSkeleton.tsx";
 
 function TopDoctors() {
   const navigate = useNavigate();

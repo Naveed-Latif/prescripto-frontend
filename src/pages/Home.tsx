@@ -1,7 +1,7 @@
-import Banner from "../components/Banner"
-import Header from "../components/Header"
-import SpecialityMenu from "../components/SpecialityMenu"
-import TopDoctors from "../components/TopDoctors"
+import Banner from "../components/Dashboard/Banner"
+import Header from "../components/Dashboard/Header"
+import SpecialityMenu from "../components/Dashboard/SpecialityMenu"
+import TopDoctors from "../components/Dashboard/TopDoctors"
 function Home() {
   return (
     <div>

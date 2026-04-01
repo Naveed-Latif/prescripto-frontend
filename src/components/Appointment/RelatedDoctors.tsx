@@ -1,17 +1,12 @@
-import { useContext } from "react";
-import { AppContext } from "../context/AppContext";
-import DoctorCard from "./DoctorCard";
+import DoctorCard from "../DoctorCard";
+import type { Doctor } from "../../Types";
 
 interface RelatedDocProps {
-  docId: string | undefined;
-  speciality: string;
+  Docinfo: Doctor[];
 }
 
-function RelatedDoctors({ docId, speciality }: RelatedDocProps) {
-  const { doctors } = useContext(AppContext);
-  const relatedDoc = doctors.filter(
-    (doc) => doc.specialty === speciality && doc.id !== Number(docId),
-  );
+function RelatedDoctors({ Docinfo }: RelatedDocProps) {
+  
 
   return (
     <div>
@@ -21,7 +16,7 @@ function RelatedDoctors({ docId, speciality }: RelatedDocProps) {
           Simply browse through our extensive list of trusted doctors.
         </p>
         <div className="w-full grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-4 pt-5 gap-y-6 px-3 sm:px-0 ">
-          {relatedDoc.slice(0, 5).map((doctor) => (
+          {Docinfo.map((doctor) => (
             <DoctorCard key={doctor.id} doctor={doctor} />
           ))}
         </div>

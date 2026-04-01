@@ -1,13 +1,11 @@
 import { useState, useEffect } from "react";
-import type { Review, ReviewResponse } from "../Types.ts";
+import type { Review, ReviewResponse } from "../../Types.ts";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useContext } from "react";
-import { AppContext } from "../context/AppContext";
+import { AppContext } from "../../context/AppContext.tsx";
 import ReviewCard from "./ReviewCard";
-import ReviewsSkeleton from "../skelton/ReviewsSkeleton.tsx";
-
-
+import ReviewsSkeleton from "../../skelton/ReviewsSkeleton.tsx";
 
 // --- Reviews Box ---
 const Reviews = ({ id }: { id: string }) => {
@@ -46,7 +44,7 @@ const Reviews = ({ id }: { id: string }) => {
     fetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-if (loading) return <ReviewsSkeleton />
+  if (loading) return <ReviewsSkeleton />;
   return (
     <div className="border border-gray-200 rounded-2xl p-6 max-h-[350px] overflow-y-auto scroll-smooth">
       {/* Header */}

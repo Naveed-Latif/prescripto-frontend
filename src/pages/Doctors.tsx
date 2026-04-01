@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext.tsx";
-import type { DoctorFilters } from "../Types.ts";
+import type {  DoctorFilters } from "../Types.ts";
 import DoctorCard from "../components/DoctorCard.tsx";
 import Pagination from "../components/Pagination.tsx";
 import DoctorFiltersPanel from "../components/DoctorFiltersPanel.tsx";

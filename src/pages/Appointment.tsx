@@ -1,37 +1,57 @@
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
 import { useParams, useNavigate } from "react-router-dom";
-import type { Doctor } from "../Types.ts";
-import RelatedDoctors from "../components/RelatedDoctors.tsx";
+import type { Doctor, WeeklyBooking } from "../Types.ts";
+import RelatedDoctors from "../components/Appointment/RelatedDoctors.tsx";
 import axios from "axios";
 import { toast } from "react-toastify";
-import Reviews from "../components/Reviews.tsx";
+import Reviews from "../components/Appointment/Reviews.tsx";
 import AppointmentDetailSkeleton from "../skelton/AppointmentDetailSkeleton.tsx";
+import { formatAppointmentDate } from "../utils/Formaters.tsx";
 
-// import BookingSlots from '../components/BookingSlots.tsx'
 type Slot = { datetime: Date; time: string };
-
-const formatAppointmentDate = (date: Date): string => {
-  // Use getUTC methods so the server saves it correctly as UTC
-  const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(date.getUTCDate()).padStart(2, "0");
-  const hours = String(date.getUTCHours()).padStart(2, "0");
-  const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-  return `${year}-${month}-${day} ${hours}:${minutes}`;
-};
 
 function Appointment() {
   const [docInfo, setDocInfo] = useState<Doctor>();
-  const { doctors, currencySymbol, backendurl, token ,docLoading } = useContext(AppContext);
+  const [relDocs, setRelDocs] = useState<Doctor[]>([]);
+  const [bookingData, setBookingData] = useState<WeeklyBooking[]>([]);
+  const { currencySymbol, backendurl, token } = useContext(AppContext);
   const { id } = useParams();
   const [docSlots, SetDocSlots] = useState<Slot[][]>([]);
   const [slotIndex, SetSlotIndex] = useState<number>(0);
   const [slotTime, SetSlotTime] = useState<string>("");
+  const [docLoading, setDocLoading] = useState<boolean>(true);
   const daysOfTheWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
   const navigate = useNavigate();
 
+  // load Doctor Profile
+
+  useEffect(() => {
+    const loadDoctorProfile = async () => {
+      try {
+        const response = await axios.get(`${backendurl}/doctors/${id}`);
+        if (response.data.status == 200) {
+          setDocInfo(response.data.doctor);
+          setRelDocs(response.data.related_doctors || []);
+          setBookingData(response.data.weeklyBookings || []);
+        } else {
+          toast.error("Failed to load doctor profile");
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          const message = error.response?.data?.error;
+          toast.error(message || "Failed to load doctor profile");
+        }
+      } finally {
+        setDocLoading(false);
+      }
+    };
+    loadDoctorProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  // book Appointment
   const bookAppointment = async () => {
     if (!token) {
       toast.warning("Please login to book an appointment");
@@ -81,17 +101,6 @@ function Appointment() {
   };
 
   useEffect(() => {
-    if (!doctors || !id) return;
-    const findDoctor = (id?: string) => {
-      const doctor: Doctor | undefined = doctors.find(
-        (doc) => doc.id === Number(id),
-      );
-      setDocInfo(doctor);
-    };
-    findDoctor(id);
-  }, [id, doctors]);
-
-  useEffect(() => {
     const getAvailableSlots = async () => {
       SetDocSlots([]);
 
@@ -136,7 +145,22 @@ function Appointment() {
     };
     getAvailableSlots();
   }, []);
+  const bookedTimes = bookingData
+    .filter((b) => !b.isCancel) // ignore cancelled bookings
+    .map((b) => new Date(b.appointmentDate).toISOString());
 
+  const isSlotBooked = (slotDatetime: Date): boolean => {
+    return bookedTimes.some((booked) => {
+      const bookedDate = new Date(booked);
+      return (
+        bookedDate.getFullYear() === slotDatetime.getFullYear() &&
+        bookedDate.getMonth() === slotDatetime.getMonth() &&
+        bookedDate.getDate() === slotDatetime.getDate() &&
+        bookedDate.getHours() === slotDatetime.getHours() &&
+        bookedDate.getMinutes() === slotDatetime.getMinutes()
+      );
+    });
+  };
   if (docLoading) {
     return <AppointmentDetailSkeleton />;
   }
@@ -210,15 +234,24 @@ function Appointment() {
           </div>
           <div className="flex gap-3 items-center overflow-x-scroll w-full mt-4 ">
             {docSlots.length &&
-              docSlots[slotIndex].map((item, index) => (
-                <p
-                  key={index}
-                  onClick={() => SetSlotTime(item.time)}
-                  className={`text-sm font-light shrink-0 py-2 px-2 cursor-pointer rounded-full ${item.time === slotTime ? "bg-primary text-white" : "text-[#949494] border border-gray-500"}`}
-                >
-                  {item.time.toLowerCase()}
-                </p>
-              ))}
+              docSlots[slotIndex].map((item, index) => {
+                const booked = isSlotBooked(item.datetime);
+                return (
+                  <p
+                    key={index}
+                    onClick={() => !booked && SetSlotTime(item.time)} 
+                    className={`text-sm font-light shrink-0 py-2 px-2 rounded-full ${
+                      booked
+                        ? "bg-red-50 text-red-300 border border-red-200 cursor-not-allowed" 
+                        : item.time === slotTime
+                          ? "bg-primary text-white cursor-pointer" 
+                          : "text-[#949494] border border-gray-500 cursor-pointer" 
+                    }`}
+                  >
+                    {booked ? "Booked" : item.time.toLowerCase()}
+                  </p>
+                );
+              })}
           </div>
           <button
             onClick={bookAppointment}
@@ -227,7 +260,7 @@ function Appointment() {
             Book Appointment
           </button>
         </div>
-        <RelatedDoctors docId={id} speciality={docInfo.specialty} />
+        <RelatedDoctors Docinfo={relDocs} />
       </div>
     )
   );

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Review } from "../Types";
+import type { Review } from "../../Types";
 
 function formatRelativeDate(iso: string, now: number): string {
   const date = new Date(iso);

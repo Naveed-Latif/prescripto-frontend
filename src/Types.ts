@@ -1,3 +1,4 @@
+
 export interface DoctorProfile {
   id: number;
   email: string;
@@ -139,3 +140,26 @@ export interface ReviewResponse {
   reviews: Review[];
   pagination: Pagination;
 }
+
+export interface RelatedDoctorsResponse {
+  status: number;
+  doctor:Doctor;
+  related_doctors: Doctor[];
+  weeklyBookings:WeeklyBooking[];
+
+}
+export interface WeeklyBooking {
+  id: number;
+  appointmentDate: string;
+  patientId: number;
+  doctorId: number;
+  isCancel: boolean;
+  isCompleted: boolean;
+  canceledByUserId: number | null;
+  completedByUserId: number | null;
+  cancellationReason: string | null;
+  completionSummary: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+ 
