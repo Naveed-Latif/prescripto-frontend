@@ -8,6 +8,8 @@ import AppointmentsSkeleton from "../skelton/AppointmentsSkeleton";
 import FeedbackModal from "../components/FeedbackModal";
 import CancelConfirmModal from "../components/CancelConfirmModal";
 import Pagination from "../components/Pagination";
+import AppointmentsFilterPanel, { type DoctorAppointmentFilterValues } from "../components/Appointment/AppointmentsFilterPanel";
+import { FiFilter } from "react-icons/fi";
 
 function MyAppointments() {
   const { backendurl, token } = useContext(AppContext);
@@ -23,6 +25,12 @@ function MyAppointments() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [totalPages, setTotalPages] = useState<number>(1);
   const currentPage = Number(searchParams.get("page") ?? 1);
+  const [filterPanelOpen, setFilterPanelOpen] = useState(false);
+  const [filters, setFilters] = useState<DoctorAppointmentFilterValues>({
+    statuses: [],
+    fromDate: "",
+    toDate: "",
+  });
 
   //  --handle page change--
   const handlePageChange = (page: number) => {
@@ -68,6 +76,9 @@ function MyAppointments() {
       const response = await axios.get(`${backendurl}/appointments`, {
         params: {
           page: currentPage,
+          status: filters.statuses.join(","),
+          fromDate: filters.fromDate || undefined,
+          toDate: filters.toDate || undefined,
         },
         headers: {
           Authorization: `Bearer ${token}`,
@@ -128,23 +139,53 @@ function MyAppointments() {
       toast.error("An error occurred while cancelling appointment");
     }
   };
+  const activeFilterCount = [
+    filters.statuses.length > 0 ? "status" : "",
+    filters.fromDate,
+    filters.toDate,
+  ].filter(Boolean).length;
+  
+  const handleApplyFilters = (values: DoctorAppointmentFilterValues) => {
+    setFilters(values);
+    handlePageChange(1);
+  };
 
+  const handleResetFilters = () => {
+    setFilters({
+      statuses: [],
+      fromDate: "",
+      toDate: "",
+    });
+    handlePageChange(1);
+  };
   useEffect(() => {
     const fetchAppoinmtent = async () => {
       await fetchAppointments();
     };
     fetchAppoinmtent();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location, currentPage]);
+  }, [location, currentPage, filters]);
   // console.log(appointments[0].doctor.profile.addresses)
   if (loading) {
     return <AppointmentsSkeleton />;
   }
   return (
     <div>
-      <p className="pb-3 mt-10 text-lg text-gray-600 border-b border-b-gray-400">
-        My Appointments
-      </p>
+      <div className="flex items-center justify-between border-b border-b-gray-400">
+        <p className="pb-3 mt-10 text-lg text-gray-600 ">My Appointments</p>
+        <button
+          onClick={() => setFilterPanelOpen(true)}
+          className="relative cursor-pointer flex items-center gap-2 px-4 py-2 text-sm border border-gray-200 rounded-lg bg-white hover:bg-gray-50 transition-colors text-gray-600"
+        >
+          <FiFilter className="w-4 h-4" />
+          Filters
+          {activeFilterCount > 0 && (
+            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-primary text-white text-xs rounded-full flex items-center justify-center">
+              {activeFilterCount}
+            </span>
+          )}
+        </button>
+      </div>
       {appointments.map((appointment, index) => (
         <div
           key={index}
@@ -163,13 +204,13 @@ function MyAppointments() {
           <div className="flex-1 text-sm text-[#5E5E5E]">
             <p className="text-base text-[#262626] font-semibold flex items-center gap-2">
               {appointment.doctor.profile.name}
-              {appointment.isCancel ? (
-                <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-red-50 text-red-500 border border-red-200">
-                  Cancelled
-                </span>
-              ) : appointment.isCompleted ? (
+              {appointment.isCompleted ? (
                 <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-green-50 text-green-600 border border-green-200">
                   Completed
+                </span>
+              ) : appointment.isCancel ? (
+                <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-red-50 text-red-500 border border-red-200">
+                  Cancelled
                 </span>
               ) : new Date(appointment.appointmentDate) < new Date() ? (
                 <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-500 border border-gray-200">
@@ -199,7 +240,7 @@ function MyAppointments() {
           </div>
           <div></div>
           <div className="flex flex-col justify-end gap-2">
-            {appointment.isCancel ? null : appointment.isCompleted ? (
+            {appointment.isCompleted ? (
               appointment.reviews && appointment.reviews?.length > 0 ? (
                 // ✅ Completed + feedback already given → show review panel
                 <div className="flex-1 border-l border-gray-200 pl-6 ml-2 min-w-[220px]">
@@ -242,7 +283,7 @@ function MyAppointments() {
                   </button>
                 </div>
               )
-            ) : new Date(appointment.appointmentDate) < new Date() ? null : (
+            ) : appointment.isCancel ? null : new Date(appointment.appointmentDate) < new Date() ? null : (
               // ✅ Upcoming → show Pay Online + Cancel
               <div className="flex flex-col justify-end gap-2">
                 {appointment.isPaid ? (
@@ -279,6 +320,13 @@ function MyAppointments() {
         isOpen={cancelAppointmentId !== null}
         onClose={() => setCancelAppointmentId(null)}
         onConfirm={(note) => cancelAppointment(cancelAppointmentId!, note)}
+      />
+      <AppointmentsFilterPanel
+        isOpen={filterPanelOpen}
+        onClose={() => setFilterPanelOpen(false)}
+        values={filters}
+        onApply={handleApplyFilters}
+        onReset={handleResetFilters}
       />
     </div>
   );

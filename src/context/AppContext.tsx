@@ -105,10 +105,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
           if (filters.min_experience !== undefined) params.set("min_experience", String(filters.min_experience));
           if (filters.max_experience !== undefined) params.set("max_experience", String(filters.max_experience));
           if (filters.consultation_type) params.set("consultation_type", filters.consultation_type);
-          if (filters.join_from_date) params.set("join_from_date", filters.join_from_date);
-          if (filters.join_to_date) params.set("join_to_date", filters.join_to_date);
           if (filters.sort_by) params.set("sort_by", filters.sort_by);
-          if (filters.has_appointments) params.set("has_appointments", "true");
         }
 
         const response = await axios.get(

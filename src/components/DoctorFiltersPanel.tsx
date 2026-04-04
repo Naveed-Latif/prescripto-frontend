@@ -1,9 +1,6 @@
 import Select from 'react-select';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import StarRatingFilter from './StarRatingFilter';
 import DualRangeSlider from './DualRangeSlider';
-import Toggle from './Toggle';
 
 const ALL_SPECIALTIES = [
   { label: 'General Physician', value: 'GeneralPhysician' },
@@ -28,16 +25,16 @@ const SORT_OPTIONS = [
   { label: 'Fee: High to Low', value: 'fee_high' },
 ];
 
-// react-select custom styles to match indigo theme
+// react-select custom styles to match the reference design
 const selectStyles = {
   control: (base: object, state: { isFocused: boolean }) => ({
     ...base,
-    borderColor: state.isFocused ? '#6366f1' : '#d1d5db',
+    borderColor: state.isFocused ? '#6366f1' : '#e5e7eb',
     borderRadius: '0.5rem',
-    backgroundColor: '#f9fafb',
+    backgroundColor: '#ffffff',
     boxShadow: state.isFocused ? '0 0 0 1px #6366f1' : 'none',
     fontSize: '0.875rem',
-    minHeight: '38px',
+    minHeight: '40px',
     '&:hover': { borderColor: '#a5b4fc' },
   }),
   option: (base: object, state: { isSelected: boolean; isFocused: boolean }) => ({
@@ -56,8 +53,6 @@ const selectStyles = {
 };
 
 
-
-
 export interface DoctorFiltersPanelProps {
   selectedSpecialties: string[];
   feeRange: [number, number];
@@ -66,20 +61,15 @@ export interface DoctorFiltersPanelProps {
   sortBy: string;
   onParamsChange: (updates: Record<string, string | null>) => void;
   onClearAll: () => void;
-  // new props
   experienceRange: [number, number];
   consultationType: 'online' | 'clinic' | '';
-  joinFromDate: string;
-  joinToDate: string;
-  hasAppointments: boolean;
   name: string;
 }
 
 function DoctorFiltersPanel({
   selectedSpecialties, feeRange, ratingRange, gender, sortBy,
   onParamsChange, onClearAll,
-  experienceRange, consultationType, joinFromDate, joinToDate,
-  hasAppointments, name,
+  experienceRange, consultationType, name,
 }: DoctorFiltersPanelProps) {
   const selectedRating = ratingRange[0] >= 1 ? ratingRange[0] : 0;
 
@@ -90,16 +80,27 @@ function DoctorFiltersPanel({
     experienceRange[0] > 0 || experienceRange[1] < 30 ||
     gender !== '' || sortBy !== '' ||
     consultationType !== '' ||
-    joinFromDate !== '' || joinToDate !== '' ||
-    hasAppointments || name !== '';
+    name !== '';
 
   return (
-    <div className="w-full sm:w-64 shrink-0 bg-white border border-gray-100 rounded-2xl p-5 shadow-sm h-fit space-y-5">
-      <h3 className="text-lg font-medium text-gray-700">Filters</h3>
+    <div className="w-full sm:w-64 shrink-0 bg-white border border-gray-100 rounded-2xl shadow-sm h-fit overflow-hidden">
+
+      {/* ── Header ──────────────────────────────────── */}
+      <div className="flex items-center justify-between px-5 pt-5 pb-4">
+        <h3 className="text-lg font-bold text-indigo-600">Filters</h3>
+        {hasActiveFilters && (
+          <button
+            onClick={onClearAll}
+            className="text-sm font-medium text-indigo-500 hover:text-indigo-700 transition"
+          >
+            Reset
+          </button>
+        )}
+      </div>
 
       {/* ── Name Search ─────────────────────────────── */}
-      <div>
-        <p className="text-sm font-medium text-gray-700 mb-2">Search by Name</p>
+      <div className="border-t border-gray-100 px-5 py-4">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2">Search by Name</p>
         <div className="relative">
           <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-4.35-4.35M17 11A6 6 0 115 11a6 6 0 0112 0z" />
@@ -108,15 +109,15 @@ function DoctorFiltersPanel({
             type="text"
             value={name}
             onChange={(e) => onParamsChange({ name: e.target.value || null })}
-            placeholder="Doctor name..."
-            className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-50 focus:outline-none focus:ring-1 focus:ring-indigo-400"
+            placeholder="Search doctor..."
+            className="w-full pl-9 pr-3 py-2.5 text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 transition"
           />
         </div>
       </div>
 
       {/* ── Specialty ────────────────────────────────── */}
-      <div>
-        <p className="text-sm font-medium text-gray-700 mb-2">Specialty</p>
+      <div className="px-5 py-4">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2">Specialty</p>
         <Select
           isMulti
           options={ALL_SPECIALTIES}
@@ -125,15 +126,15 @@ function DoctorFiltersPanel({
             const values = selected.map(s => s.value);
             onParamsChange({ speciality: values.length > 0 ? values.join(',') : null });
           }}
-          placeholder="All specialties"
+          placeholder="All Specialties"
           styles={selectStyles}
           classNamePrefix="react-select"
         />
       </div>
 
       {/* ── Sort By ──────────────────────────────────── */}
-      <div>
-        <p className="text-sm font-medium text-gray-700 mb-2">Sort By</p>
+      <div className="px-5 py-4">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2">Sort By</p>
         <Select
           options={SORT_OPTIONS}
           value={SORT_OPTIONS.find(o => o.value === sortBy) ?? SORT_OPTIONS[0]}
@@ -144,8 +145,8 @@ function DoctorFiltersPanel({
       </div>
 
       {/* ── Fee Range ────────────────────────────────── */}
-      <div>
-        <p className="text-sm font-medium text-gray-700 mb-2">Fee Range</p>
+      <div className="border-t border-gray-100 px-5 py-4">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-3">Fee Range</p>
         <DualRangeSlider
           min={0} max={500}
           valueMin={feeRange[0]} valueMax={feeRange[1]}
@@ -158,8 +159,8 @@ function DoctorFiltersPanel({
       </div>
 
       {/* ── Experience Range ─────────────────────────── */}
-      <div>
-        <p className="text-sm font-medium text-gray-700 mb-2">Experience (years)</p>
+      <div className="px-5 py-4">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-3">Experience (Years)</p>
         <DualRangeSlider
           min={0} max={30}
           valueMin={experienceRange[0]} valueMax={experienceRange[1]}
@@ -167,12 +168,13 @@ function DoctorFiltersPanel({
             minExperience: lo > 0 ? String(lo) : null,
             maxExperience: hi < 30 ? String(hi) : null,
           })}
+          suffix=" yrs"
         />
       </div>
 
       {/* ── Rating ───────────────────────────────────── */}
-      <div>
-        <p className="text-sm font-medium text-gray-700 mb-2">Rating</p>
+      <div className="px-5 py-4">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-3">Rating</p>
         <StarRatingFilter
           value={selectedRating}
           onChange={(rating) => onParamsChange({
@@ -183,17 +185,17 @@ function DoctorFiltersPanel({
       </div>
 
       {/* ── Gender ───────────────────────────────────── */}
-      <div>
-        <p className="text-sm font-medium text-gray-700 mb-2">Gender</p>
+      <div className="border-t border-gray-100 px-5 py-4">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-3">Gender</p>
         <div className="flex gap-2">
           {(['', 'MALE', 'FEMALE'] as const).map((g) => (
             <button
               key={g}
               onClick={() => onParamsChange({ gender: g || null })}
-              className={`flex-1 py-1.5 text-xs rounded-lg border transition font-medium ${
+              className={`px-4 py-1.5 text-xs rounded-full border transition-all font-medium ${
                 gender === g
-                  ? 'bg-indigo-500 text-white border-indigo-500'
-                  : 'border-gray-300 text-gray-600 hover:border-indigo-300 hover:bg-indigo-50'
+                  ? 'bg-indigo-500 text-white border-indigo-500 shadow-sm'
+                  : 'border-gray-200 text-gray-500 hover:border-indigo-300 hover:text-indigo-500'
               }`}
             >
               {g === '' ? 'All' : g === 'MALE' ? 'Male' : 'Female'}
@@ -203,17 +205,17 @@ function DoctorFiltersPanel({
       </div>
 
       {/* ── Consultation Type ────────────────────────── */}
-      <div>
-        <p className="text-sm font-medium text-gray-700 mb-2">Consultation Type</p>
+      <div className="px-5 py-4 pb-5">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-3">Consultation Type</p>
         <div className="flex gap-2">
           {(['', 'online', 'clinic'] as const).map((c) => (
             <button
               key={c}
               onClick={() => onParamsChange({ consultationType: c || null })}
-              className={`flex-1 py-1.5 text-xs rounded-lg border transition font-medium ${
+              className={`px-4 py-1.5 text-xs rounded-full border transition-all font-medium ${
                 consultationType === c
-                  ? 'bg-indigo-500 text-white border-indigo-500'
-                  : 'border-gray-300 text-gray-600 hover:border-indigo-300 hover:bg-indigo-50'
+                  ? 'bg-indigo-500 text-white border-indigo-500 shadow-sm'
+                  : 'border-gray-200 text-gray-500 hover:border-indigo-300 hover:text-indigo-500'
               }`}
             >
               {c === '' ? 'Both' : c === 'online' ? 'Online' : 'Clinic'}
@@ -221,51 +223,6 @@ function DoctorFiltersPanel({
           ))}
         </div>
       </div>
-
-      {/* ── Join Date Range ──────────────────────────── */}
-      <div>
-        <p className="text-sm font-medium text-gray-700 mb-2">Joined Between</p>
-        <div className="flex flex-col gap-2">
-          <DatePicker
-            selected={joinFromDate ? new Date(joinFromDate) : null}
-            onChange={(date: Date | null) => onParamsChange({
-              joinFromDate: date ? date.toISOString().split('T')[0] : null
-            })}
-            placeholderText="From date"
-            dateFormat="MMM d, yyyy"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 focus:outline-none focus:ring-1 focus:ring-indigo-400"
-          />
-          <DatePicker
-            selected={joinToDate ? new Date(joinToDate) : null}
-            onChange={(date: Date | null) => onParamsChange({
-              joinToDate: date ? date.toISOString().split('T')[0] : null
-            })}
-            placeholderText="To date"
-            dateFormat="MMM d, yyyy"
-            minDate={joinFromDate ? new Date(joinFromDate) : undefined}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 focus:outline-none focus:ring-1 focus:ring-indigo-400"
-          />
-        </div>
-      </div>
-
-      {/* ── Has Appointments Toggle ──────────────────── */}
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-gray-700">Has Appointments</p>
-        <Toggle
-          checked={hasAppointments}
-          onChange={(v) => onParamsChange({ hasAppointments: v ? 'true' : null })}
-        />
-      </div>
-
-      {/* ── Clear All ────────────────────────────────── */}
-      {hasActiveFilters && (
-        <button
-          onClick={onClearAll}
-          className="w-full py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition"
-        >
-          Clear All Filters
-        </button>
-      )}
     </div>
   );
 }

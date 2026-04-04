@@ -118,10 +118,7 @@ export interface DoctorFilters {
   min_experience?: number;
   max_experience?: number;
   consultation_type?: 'online' | 'clinic' | '';
-  join_from_date?: string;
-  join_to_date?: string;
   sort_by?: string;
-  has_appointments?: boolean;
 }
 
 export interface ReviewPerson {

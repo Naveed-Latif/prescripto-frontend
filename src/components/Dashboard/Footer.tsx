@@ -18,8 +18,6 @@ function Footer() {
           <ul className="flex flex-col gap-4 text-sm text-gray-500">
             <li><a href="/">Home</a></li>
             <li><a href="/about">About us</a></li>
-            <li>Delivery</li>
-            <li>Privacy policy</li>
           </ul>
         </div>
         {/* -----------Right Section------------ */}
@@ -27,7 +25,7 @@ function Footer() {
           <p className="text-xl font-medium mb-3">GET IN TOUCH</p>
           <ul className="flex flex-col gap-4 text-sm text-gray-500">
             <li>+0-000-000-000</li>
-            <li>greatstackdev@gmail.com</li>
+            <li>example@gmail.com</li>
           </ul>
         </div>
       </div>

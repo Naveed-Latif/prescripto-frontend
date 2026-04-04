@@ -51,9 +51,7 @@ function Doctors() {
     | "online"
     | "clinic"
     | "";
-  const joinFromDate = searchParams.get("joinFromDate") ?? "";
-  const joinToDate = searchParams.get("joinToDate") ?? "";
-  const hasAppointments = searchParams.get("hasAppointments") === "true";
+
   const name = searchParams.get("name") ?? "";
 
   // ── Helper: update URL search params ──────────────────────
@@ -110,9 +108,7 @@ function Doctors() {
   if (experienceRange[0] > 0) f.min_experience = experienceRange[0];
   if (experienceRange[1] < 30) f.max_experience = experienceRange[1];
   if (consultationType) f.consultation_type = consultationType;
-  if (joinFromDate) f.join_from_date = joinFromDate;
-  if (joinToDate) f.join_to_date = joinToDate;
-  if (hasAppointments) f.has_appointments = true;
+
   if (gender) f.gender = gender;
   if (sortBy) f.sort_by = sortBy;
   if (name) f.name = name;
@@ -165,9 +161,7 @@ function Doctors() {
             onClearAll={() => setSearchParams({})}
             experienceRange={experienceRange}
             consultationType={consultationType}
-            joinFromDate={joinFromDate}
-            joinToDate={joinToDate}
-            hasAppointments={hasAppointments}
+
             name={name}
           />
         </div>

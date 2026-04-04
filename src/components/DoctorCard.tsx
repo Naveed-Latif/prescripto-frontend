@@ -59,7 +59,7 @@ function DoctorCard({ doctor }: DoctorCardProps) {
         <p className={`${lastVisitedDoctor === doctor.id ? "text-indigo-400" : "text-gray-900"} font-medium text-lg`}>
           {doctor.profile.name}
         </p>
-        <p className="text-xs text-gray-600">{doctor.specialty}</p>
+        <p className="text-xs text-gray-600">{doctor.specialty=== "GeneralPhysician" ? "General Physician" : doctor.specialty === "OrthopedicSurgeon" ? "Orthopedic Surgeon" : doctor.specialty}</p>
         <div className="flex items-center gap-1 mt-1">
           {doctor.totalReviews <= 0 ? (
             <>

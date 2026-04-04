@@ -1,10 +1,10 @@
 import { useCallback, useRef } from 'react';
 
 export default function DualRangeSlider({
-  min, max, valueMin, valueMax, onChange, prefix = '',
+  min, max, valueMin, valueMax, onChange, prefix = '', suffix = '',
 }: {
   min: number; max: number; valueMin: number; valueMax: number;
-  onChange: (lo: number, hi: number) => void; prefix?: string;
+  onChange: (lo: number, hi: number) => void; prefix?: string; suffix?: string;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const pct = (v: number) => ((v - min) / (max - min)) * 100;
@@ -33,28 +33,28 @@ export default function DualRangeSlider({
 
   return (
     <div className="w-full">
-      <div className="flex justify-between text-xs text-indigo-500 mb-2 font-medium">
-        <span>{prefix}{valueMin}</span>
-        <span>{prefix}{valueMax}</span>
-      </div>
-      <div ref={trackRef} className="relative h-1 bg-gray-200 rounded-full select-none touch-none">
+      <div ref={trackRef} className="relative h-1.5 bg-gray-200 rounded-full select-none touch-none">
         {/* Filled range */}
         <div
-          className="absolute h-full bg-indigo-400 rounded-full"
+          className="absolute h-full bg-indigo-500 rounded-full"
           style={{ left: `${pct(valueMin)}%`, width: `${pct(valueMax) - pct(valueMin)}%` }}
         />
         {/* Min thumb */}
         <div
           onPointerDown={handlePointer('min')}
-          className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-indigo-500 rounded-full cursor-grab active:cursor-grabbing shadow-sm"
-          style={{ left: `${pct(valueMin)}%`, marginLeft: '-6px' }}
+          className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-indigo-500 rounded-full cursor-grab active:cursor-grabbing shadow"
+          style={{ left: `${pct(valueMin)}%`, marginLeft: '-8px' }}
         />
         {/* Max thumb */}
         <div
           onPointerDown={handlePointer('max')}
-          className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-indigo-500 rounded-full cursor-grab active:cursor-grabbing shadow-sm"
-          style={{ left: `${pct(valueMax)}%`, marginLeft: '-6px' }}
+          className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-indigo-500 rounded-full cursor-grab active:cursor-grabbing shadow"
+          style={{ left: `${pct(valueMax)}%`, marginLeft: '-8px' }}
         />
+      </div>
+      <div className="flex justify-between text-xs text-gray-500 mt-2 font-medium">
+        <span>{prefix}{valueMin}{suffix}</span>
+        <span>{prefix}{valueMax}{suffix}</span>
       </div>
     </div>
   );
