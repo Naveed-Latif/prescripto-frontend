@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import type { Review, ReviewResponse } from "../../Types.ts";
+import type { Review, ReviewResponse } from "../../types/Types.ts";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useContext } from "react";

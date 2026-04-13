@@ -2,7 +2,12 @@ import { createContext, useCallback, useEffect, useState } from "react";
 import type { Dispatch, ReactNode, SetStateAction } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import type { UserData, Doctor, Pagination, DoctorFilters } from "../Types";
+import type {
+  UserData,
+  Doctor,
+  Pagination,
+  DoctorFilters,
+} from "../types/Types";
 
 const currencySymbol = "$";
 
@@ -19,8 +24,8 @@ interface AppContextType {
   userData: UserData | null;
   setUserData: Dispatch<SetStateAction<UserData | null>>;
   loadUserData: () => Promise<void>;
-  docLoading:boolean
-  ProLoading:boolean
+  docLoading: boolean;
+  ProLoading: boolean;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -35,9 +40,8 @@ export const AppContext = createContext<AppContextType>({
   userData: null,
   setUserData: () => {},
   loadUserData: async () => {},
-  docLoading:true,
-  ProLoading:true,
-  
+  docLoading: true,
+  ProLoading: true,
 });
 
 interface AppProviderProps {
@@ -51,9 +55,8 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   const [doctorsPagination, setDoctorsPagination] = useState<Pagination | null>(
     null,
   );
-  const [docLoading,setDocLoading] = useState<boolean>(true)
-  const [ProLoading, setProLoading] = useState<boolean>(true)
-  
+  const [docLoading, setDocLoading] = useState<boolean>(true);
+  const [ProLoading, setProLoading] = useState<boolean>(true);
 
   const loadUserData = useCallback(async () => {
     try {
@@ -83,8 +86,8 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         console.error("Error:", String(error));
       }
       toast.error("Something went wrong. Please try again.");
-    }finally{
-      setProLoading(false)
+    } finally {
+      setProLoading(false);
     }
   }, [token]);
 
@@ -97,14 +100,22 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         if (filters) {
           if (filters.name) params.set("name", filters.name);
           if (filters.gender) params.set("gender", filters.gender);
-          if (filters.specialties?.length) params.set("specialties", filters.specialties.join(",")); // ✅ comma separated
-          if (filters.min_fee !== undefined) params.set("min_fee", String(filters.min_fee));
-          if (filters.max_fee !== undefined) params.set("max_fee", String(filters.max_fee));
-          if (filters.min_rating !== undefined) params.set("min_rating", String(filters.min_rating));
-          if (filters.max_rating !== undefined) params.set("max_rating", String(filters.max_rating));
-          if (filters.min_experience !== undefined) params.set("min_experience", String(filters.min_experience));
-          if (filters.max_experience !== undefined) params.set("max_experience", String(filters.max_experience));
-          if (filters.consultation_type) params.set("consultation_type", filters.consultation_type);
+          if (filters.specialties?.length)
+            params.set("specialties", filters.specialties.join(",")); // ✅ comma separated
+          if (filters.min_fee !== undefined)
+            params.set("min_fee", String(filters.min_fee));
+          if (filters.max_fee !== undefined)
+            params.set("max_fee", String(filters.max_fee));
+          if (filters.min_rating !== undefined)
+            params.set("min_rating", String(filters.min_rating));
+          if (filters.max_rating !== undefined)
+            params.set("max_rating", String(filters.max_rating));
+          if (filters.min_experience !== undefined)
+            params.set("min_experience", String(filters.min_experience));
+          if (filters.max_experience !== undefined)
+            params.set("max_experience", String(filters.max_experience));
+          if (filters.consultation_type)
+            params.set("consultation_type", filters.consultation_type);
           if (filters.sort_by) params.set("sort_by", filters.sort_by);
         }
 
@@ -127,8 +138,8 @@ export const AppProvider = ({ children }: AppProviderProps) => {
           console.error("Error:", String(error));
         }
         toast.error("Something went wrong. Please try again.");
-      }finally{
-        setDocLoading(false)
+      } finally {
+        setDocLoading(false);
       }
     },
     [],
@@ -167,7 +178,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     setUserData,
     loadUserData,
     docLoading,
-    ProLoading
+    ProLoading,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

@@ -3,13 +3,16 @@ import { useLocation, useSearchParams } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
-import type { Appointment } from "../Types";
+import type { Appointment } from "../types/Types";
 import AppointmentsSkeleton from "../skelton/AppointmentsSkeleton";
 import FeedbackModal from "../components/FeedbackModal";
 import CancelConfirmModal from "../components/CancelConfirmModal";
 import Pagination from "../components/Pagination";
-import AppointmentsFilterPanel, { type DoctorAppointmentFilterValues } from "../components/Appointment/AppointmentsFilterPanel";
+import AppointmentsFilterPanel, {
+  type DoctorAppointmentFilterValues,
+} from "../components/Appointment/AppointmentsFilterPanel";
 import { FiFilter } from "react-icons/fi";
+import type { DoctorList } from "../types/MyAppointmenttypes";
 
 function MyAppointments() {
   const { backendurl, token } = useContext(AppContext);
@@ -26,8 +29,10 @@ function MyAppointments() {
   const [totalPages, setTotalPages] = useState<number>(1);
   const currentPage = Number(searchParams.get("page") ?? 1);
   const [filterPanelOpen, setFilterPanelOpen] = useState(false);
+  const [doctorsList, setDoctorsList] = useState<DoctorList[]>([]);
   const [filters, setFilters] = useState<DoctorAppointmentFilterValues>({
     statuses: [],
+    doctorIds: [],
     fromDate: "",
     toDate: "",
   });
@@ -76,9 +81,13 @@ function MyAppointments() {
       const response = await axios.get(`${backendurl}/appointments`, {
         params: {
           page: currentPage,
-          status: filters.statuses.join(","),
-          fromDate: filters.fromDate || undefined,
-          toDate: filters.toDate || undefined,
+          status: filters.statuses.join(",") || undefined,
+          doctorId:
+            filters.doctorIds.length > 0
+              ? filters.doctorIds.join(",")
+              : undefined,
+          appointment_from_date: filters.fromDate || undefined,
+          appointment_to_date: filters.toDate || undefined,
         },
         headers: {
           Authorization: `Bearer ${token}`,
@@ -139,12 +148,34 @@ function MyAppointments() {
       toast.error("An error occurred while cancelling appointment");
     }
   };
+
+  const fetchDoctorsList = async () => {
+    try {
+      const { data } = await axios.get(`${backendurl}/doctors/list`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (data.status === 200) {
+        setDoctorsList(data.doctors);
+      } else {
+        toast.error(data.message || "Failed to load doctors list");
+      }
+    } catch {
+      toast.error("Failed to load doctors list");
+    }
+  };
+
+  useEffect(() => {
+    if (filterPanelOpen) {
+      fetchDoctorsList();
+    }
+  }, [filterPanelOpen]);
   const activeFilterCount = [
     filters.statuses.length > 0 ? "status" : "",
+    filters.doctorIds.length > 0 ? "doctor" : "",
     filters.fromDate,
     filters.toDate,
   ].filter(Boolean).length;
-  
+
   const handleApplyFilters = (values: DoctorAppointmentFilterValues) => {
     setFilters(values);
     handlePageChange(1);
@@ -153,6 +184,7 @@ function MyAppointments() {
   const handleResetFilters = () => {
     setFilters({
       statuses: [],
+      doctorIds: [],
       fromDate: "",
       toDate: "",
     });
@@ -283,7 +315,9 @@ function MyAppointments() {
                   </button>
                 </div>
               )
-            ) : appointment.isCancel ? null : new Date(appointment.appointmentDate) < new Date() ? null : (
+            ) : appointment.isCancel ? null : new Date(
+                appointment.appointmentDate,
+              ) < new Date() ? null : (
               // ✅ Upcoming → show Pay Online + Cancel
               <div className="flex flex-col justify-end gap-2">
                 {appointment.isPaid ? (
@@ -325,6 +359,7 @@ function MyAppointments() {
         isOpen={filterPanelOpen}
         onClose={() => setFilterPanelOpen(false)}
         values={filters}
+        doctorsList={doctorsList}
         onApply={handleApplyFilters}
         onReset={handleResetFilters}
       />

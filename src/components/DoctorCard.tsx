@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import type { Doctor } from "../Types";
+import type { Doctor } from "../types/Types";
 import { FaStar } from "react-icons/fa";
 import Lottie from "lottie-react";
 import GreenPulse from "../assets/GreenPulse.json";
@@ -17,12 +17,12 @@ function DoctorCard({ doctor }: DoctorCardProps) {
   );
   useEffect(() => {
     const storedDoctorId = localStorage.getItem("lastVisitedDoctor");
-    const saved = ()=>{
+    const saved = () => {
       if (storedDoctorId) {
         setLastVisitedDoctor(Number(storedDoctorId));
       }
-    }
-    saved()
+    };
+    saved();
   }, []);
   return (
     <div
@@ -56,20 +56,30 @@ function DoctorCard({ doctor }: DoctorCardProps) {
         )}
       </div>
       <div className="p-4">
-        <p className={`${lastVisitedDoctor === doctor.id ? "text-indigo-400" : "text-gray-900"} font-medium text-lg`}>
+        <p
+          className={`${lastVisitedDoctor === doctor.id ? "text-indigo-400" : "text-gray-900"} font-medium text-lg`}
+        >
           {doctor.profile.name}
         </p>
-        <p className="text-xs text-gray-600">{doctor.specialty=== "GeneralPhysician" ? "General Physician" : doctor.specialty === "OrthopedicSurgeon" ? "Orthopedic Surgeon" : doctor.specialty}</p>
+        <p className="text-xs text-gray-600">
+          {doctor.specialty === "GeneralPhysician"
+            ? "General Physician"
+            : doctor.specialty === "OrthopedicSurgeon"
+              ? "Orthopedic Surgeon"
+              : doctor.specialty}
+        </p>
         <div className="flex items-center gap-1 mt-1">
           {doctor.totalReviews <= 0 ? (
             <>
-            <FaStar className="text-gray-400" />
-            <p className="text-sm text-gray-500">No reviews yet</p>
+              <FaStar className="text-gray-400" />
+              <p className="text-sm text-gray-500">No reviews yet</p>
             </>
           ) : (
             <>
               <FaStar className="text-yellow-400" />
-              <span className="text-sm font-medium">{doctor.ratingAverage}</span>
+              <span className="text-sm font-medium">
+                {doctor.ratingAverage}
+              </span>
               <span className="text-sm text-gray-500">
                 ({doctor.totalReviews} reviews)
               </span>

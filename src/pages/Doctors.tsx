@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext.tsx";
-import type { DoctorFilters } from "../Types.ts";
+import type { DoctorFilters } from "../types/Types.ts";
 import DoctorCard from "../components/DoctorCard.tsx";
 import Pagination from "../components/Pagination.tsx";
 import DoctorFiltersPanel from "../components/DoctorFiltersPanel.tsx";
@@ -99,21 +99,21 @@ function Doctors() {
   // ── Build filters object ──────────────────────────────────
   // Update buildFilters()
   const buildFilters = (): DoctorFilters => {
-  const f: DoctorFilters = {};
-  if (selectedSpecialties.length > 0) f.specialties = selectedSpecialties;  // ✅ specialties not specialty
-  if (feeRange[0] > 0) f.min_fee = feeRange[0];
-  if (feeRange[1] < 500) f.max_fee = feeRange[1];
-  if (ratingRange[0] >= 1) f.min_rating = ratingRange[0];
-  if (ratingRange[1] < 5) f.max_rating = ratingRange[1];
-  if (experienceRange[0] > 0) f.min_experience = experienceRange[0];
-  if (experienceRange[1] < 30) f.max_experience = experienceRange[1];
-  if (consultationType) f.consultation_type = consultationType;
+    const f: DoctorFilters = {};
+    if (selectedSpecialties.length > 0) f.specialties = selectedSpecialties; // ✅ specialties not specialty
+    if (feeRange[0] > 0) f.min_fee = feeRange[0];
+    if (feeRange[1] < 500) f.max_fee = feeRange[1];
+    if (ratingRange[0] >= 1) f.min_rating = ratingRange[0];
+    if (ratingRange[1] < 5) f.max_rating = ratingRange[1];
+    if (experienceRange[0] > 0) f.min_experience = experienceRange[0];
+    if (experienceRange[1] < 30) f.max_experience = experienceRange[1];
+    if (consultationType) f.consultation_type = consultationType;
 
-  if (gender) f.gender = gender;
-  if (sortBy) f.sort_by = sortBy;
-  if (name) f.name = name;
-  return f;
-};
+    if (gender) f.gender = gender;
+    if (sortBy) f.sort_by = sortBy;
+    if (name) f.name = name;
+    return f;
+  };
 
   // ── Fetch on page / filter change ─────────────────────────
   useEffect(() => {
@@ -161,7 +161,6 @@ function Doctors() {
             onClearAll={() => setSearchParams({})}
             experienceRange={experienceRange}
             consultationType={consultationType}
-
             name={name}
           />
         </div>

@@ -1,13 +1,11 @@
 import DoctorCard from "../DoctorCard";
-import type { Doctor } from "../../Types";
+import type { Doctor } from "../../types/Types";
 
 interface RelatedDocProps {
   Docinfo: Doctor[];
 }
 
 function RelatedDoctors({ Docinfo }: RelatedDocProps) {
-  
-
   return (
     <div>
       <div className="flex flex-col items-center gap-4 my-16 text-gray-900 md:mx-10 ">

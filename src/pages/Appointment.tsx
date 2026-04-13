@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
 import { useParams, useNavigate } from "react-router-dom";
-import type { Doctor, WeeklyBooking } from "../Types.ts";
+import type { Doctor, WeeklyBooking } from "../types/Types.ts";
 import RelatedDoctors from "../components/Appointment/RelatedDoctors.tsx";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -239,13 +239,13 @@ function Appointment() {
                 return (
                   <p
                     key={index}
-                    onClick={() => !booked && SetSlotTime(item.time)} 
+                    onClick={() => !booked && SetSlotTime(item.time)}
                     className={`text-sm font-light shrink-0 py-2 px-2 rounded-full ${
                       booked
-                        ? "bg-red-50 text-red-300 border border-red-200 cursor-not-allowed" 
+                        ? "bg-red-50 text-red-300 border border-red-200 cursor-not-allowed"
                         : item.time === slotTime
-                          ? "bg-primary text-white cursor-pointer" 
-                          : "text-[#949494] border border-gray-500 cursor-pointer" 
+                          ? "bg-primary text-white cursor-pointer"
+                          : "text-[#949494] border border-gray-500 cursor-pointer"
                     }`}
                   >
                     {booked ? "Booked" : item.time.toLowerCase()}
