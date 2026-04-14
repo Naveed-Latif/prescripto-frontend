@@ -5,6 +5,7 @@ import Lottie from "lottie-react";
 import GreenPulse from "../assets/GreenPulse.json";
 import RedPulse from "../assets/RedPulse.json";
 import { useEffect, useState } from "react";
+import dummyDoc from "../assets/dummy_doc.png";
 
 interface DoctorCardProps {
   doctor: Doctor;
@@ -37,7 +38,7 @@ function DoctorCard({ doctor }: DoctorCardProps) {
       <div className="relative h-48 sm:h-52 md:h-56 lg:h-60 xl:h-64 w-full overflow-hidden bg-blue-50">
         <img
           className="bg-blue-50 w-full"
-          src={doctor.profile.profileImage ?? "/src/assets/dummy_doc.png"}
+          src={doctor.profile.profileImage ?? dummyDoc}
           alt={doctor.profile.name}
         />
         {doctor.isActive ? (

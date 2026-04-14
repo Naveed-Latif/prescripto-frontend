@@ -8,6 +8,10 @@ import { toast } from "react-toastify";
 import Reviews from "../components/Appointment/Reviews.tsx";
 import AppointmentDetailSkeleton from "../skelton/AppointmentDetailSkeleton.tsx";
 import { formatAppointmentDate } from "../utils/Formaters.tsx";
+// imgs
+import verifiedIcon from "../assets/verified_icon.svg";
+import dummyDoc from "../assets/dummy_doc.png";
+import infoIcon from "../assets/info_icon.svg";
 
 type Slot = { datetime: Date; time: string };
 
@@ -174,14 +178,14 @@ function Appointment() {
               <img
                 className="bg-primary w-14 h-14 rounded-full"
                 src={
-                  docInfo.profile.profileImage ?? "/src/assets/dummy_doc.png"
+                  docInfo.profile.profileImage ?? dummyDoc
                 }
                 alt=""
               />
               <p className="text-gray-700 text-3xl font-medium">
                 {docInfo.profile.name}
               </p>
-              <img className="w-5" src="/src/assets/verified_icon.svg" alt="" />
+              <img className="w-5" src={verifiedIcon} alt="" />
             </div>
             <div className="flex gap-2 my-2 text-gray-600 ">
               <p>
@@ -198,7 +202,7 @@ function Appointment() {
             <div className="">
               <p className="flex gap-2 text-sm font-medium">
                 About{" "}
-                <img className="w-3" src="/src/assets/info_icon.svg" alt="" />
+                <img className="w-3" src={infoIcon} alt="" />
               </p>
               <p className="text-gray-600 text-sm max-w-175 mt-2">
                 {docInfo.about}

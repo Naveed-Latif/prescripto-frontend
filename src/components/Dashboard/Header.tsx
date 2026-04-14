@@ -1,3 +1,7 @@
+import groupProfiles from "../../assets/group_profiles.png";
+import arrowIcon from "../../assets/arrow_icon.svg";
+import headerImg from "../../assets/header_img.png";
+
 function Header() {
   return (
     <div className="flex flex-col md:flex-row flex-wrap bg-primary rounded-lg px-6 md:px-10 lg:px-20">
@@ -7,7 +11,7 @@ function Header() {
           Book Appointment <br /> With Trusted Doctors
         </p>
         <div className="flex flex-col md:flex-row items-start  gap-4 py-10  md:py-0 text-white font-light text-sm ">
-          <img src="/src/assets/group_profiles.png" alt="Group of Profiles" />
+          <img src={groupProfiles} alt="Group of Profiles" />
           <p className=" ">
             Simply browse through our extensive list of trusted doctors,
             <br className="hidden md:block" />
@@ -18,13 +22,13 @@ function Header() {
           href="#speciality"
           className=" flex items-center gap-2 bg-white px-8 py-3 rounded-full text-[#595959] text-sm m-auto md:m-0 hover:scale-105 transition-all duration-300 hover:bg-indigo-50 "
         >
-          Book Appointment <img className="w-3" src="/src/assets/arrow_icon.svg" alt="" />
+          Book Appointment <img className="w-3" src={arrowIcon} alt="" />
         </a>
       </div>
       {/* Right Side */}
       <div className="md:w-1/2 flex items-end justify-center md:justify-end">
         <img
-          src="/src/assets/header_img.png"
+          src={headerImg}
           alt="Doctors"
           className="h-105 object-contain"
         />

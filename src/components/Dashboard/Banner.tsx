@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
+import appointmentImg from "../../assets/appointment_img.png";
 
 function Banner() {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ function Banner() {
         {/* Right Side */}
         <div className="hidden md:block md:w-1/2 lg:w-92.5 relative">
           <img
-            src="/src/assets/appointment_img.png"
+            src={appointmentImg}
             alt="Doctors"
             className="w-full max-w-md absolute bottom-0 right-0"
           />

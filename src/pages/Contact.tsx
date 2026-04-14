@@ -1,4 +1,4 @@
-
+import contactImg from "../assets/contact_image.png";
 function Contact() {
   return (
     <div>
@@ -7,7 +7,7 @@ function Contact() {
       </div>
 
       <div className="flex flex-col md:flex-row justify-center gap-10  my-10 mb-28 ">
-        <img className="w-full md:max-w-90 " src="/src/assets/contact_image.png" alt="" />
+        <img className="w-full md:max-w-90 " src={contactImg} alt="" />
         <div className="text-gray-400 flex flex-col gap-8 justify-center items-start text-sm">
           <p className="text-gray-700 text-xl">OUR OFFICE</p>
           <p>

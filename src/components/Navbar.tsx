@@ -2,6 +2,12 @@ import { useContext, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
+import logo from "../assets/logo.svg";
+import profilePic from "../assets/profile_pic.png";
+import dropdownIcon from "../assets/dropdown_icon.svg";
+import crossIcon from "../assets/cross_icon.png";
+import menuIcon from "../assets/menu_icon.svg";
+
 function Navbar() {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showMenu, setShowMenu] = useState<boolean>(false);
@@ -23,7 +29,7 @@ function Navbar() {
           scrollTo(0, 0);
         }}
         className="w-44 cursor-pointer"
-        src="/src/assets/logo.svg"
+        src={logo}
         alt="Logo"
       />
       <ul className="hidden md:flex items-start gap-5 font-medium">
@@ -52,12 +58,12 @@ function Navbar() {
             <div className="flex items-center gap-2 group relative cursor-pointer">
               <img
                 className="w-8 rounded-full"
-                src={userData?.profileImage || "/src/assets/profile_pic.png"}
+                src={userData?.profileImage || profilePic}
                 alt="User Icon"
               />
               <img
                 className="w-2.5 "
-                src="/src/assets/dropdown_icon.svg"
+                src={dropdownIcon}
                 alt="Dropdown Icon"
               />
               <div className="absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20 hidden group-hover:block">
@@ -95,14 +101,14 @@ function Navbar() {
         <img
           onClick={() => setShowMenu(true)}
           className="w-6 md:hidden"
-          src="/src/assets/menu_icon.svg"
+          src={menuIcon}
           alt=""
         />
         {/* --------mobile menu --------- */}
         <div className={` ${showMenu? 'w-full fixed' :'h-0 w-0 '} md:hidden right-0 top-0  bottom-0 z-20 overflow-hidden text-black bg-white transition-all`}>
           <div className="flex justify-between items-center py-6 px-8">
-            <img className="w-36" src="/src/assets/logo.svg" alt="" />
-            <img className="w-7" onClick={()=>setShowMenu(false)} src="/src/assets/cross_icon.png" alt="" />
+            <img className="w-36" src={logo} alt="" />
+            <img className="w-7" onClick={()=>setShowMenu(false)} src={crossIcon} alt="" />
           </div>
           <ul className="flex flex-col gap-6 mt-5 px-5 text-lg font-medium items-center">
             <NavLink className='px-4 py-2 rounded inline-block' onClick={()=>setShowMenu(false)} to="/"><p className='px-4 py-2 rounded inline-block'>HOME</p></NavLink>

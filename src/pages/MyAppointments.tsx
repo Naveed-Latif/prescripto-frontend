@@ -13,6 +13,7 @@ import AppointmentsFilterPanel, {
 } from "../components/Appointment/AppointmentsFilterPanel";
 import { FiFilter } from "react-icons/fi";
 import type { DoctorList } from "../types/MyAppointmenttypes";
+import dummyDoc from "../assets/dummy_doc.png";
 
 function MyAppointments() {
   const { backendurl, token } = useContext(AppContext);
@@ -228,7 +229,7 @@ function MyAppointments() {
               className="w-36 bg-[#EAEFFF]"
               src={
                 appointment.doctor.profile.profileImage ??
-                "/src/assets/dummy_doc.png"
+                dummyDoc
               }
               alt="Doc Img"
             />

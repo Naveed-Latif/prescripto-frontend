@@ -1,4 +1,4 @@
-
+import aboutImg from "../assets/about_image.png";
 function About() {
   return (
     <div>
@@ -7,7 +7,7 @@ function About() {
       </div>
 
       <div className="flex flex-col md:flex-row gap-12 my-12">
-        <img className="w-full md:max-w-90 " src="/src/assets/about_image.png" alt="" />
+        <img className="w-full md:max-w-90 " src={aboutImg} alt="" />
         <div className="flex flex-col gap-6 justify-center text-gray-600 text-sm md:w-1/2">
           <p>Welcome to Prescripto, your trusted partner in managing your healthcare needs conveniently and efficiently. At Prescripto, we understand the challenges individuals face when it comes to scheduling doctor appointments and managing their health records.</p>
           <p>Prescripto is committed to excellence in healthcare technology. We continuously strive to enhance our platform, integrating the latest advancements to improve user experience and deliver superior service. Whether you're booking your first appointment or managing ongoing care, Prescripto is here to support you every step of the way.</p>
