@@ -7,13 +7,16 @@ import Doctors from "../pages/Doctors"
 import Login from "../pages/Login"
 import MyProfile from "../pages/MyProfile"
 import Navbar from "../components/Navbar"
-import Footer from "../components/Footer"
+import Footer from "../components/Dashboard/Footer"
 import CreateAccount from "../pages/CreateAccount"
 import MyAppointments from "../pages/MyAppointments"
+ import { ToastContainer } from 'react-toastify';
+ import 'react-toastify/dist/ReactToastify.css';
 
 function AppLayout() {
   return (
     <div className="mx-2 sm:mx-[10%]">
+      <ToastContainer />
         <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -21,7 +24,6 @@ function AppLayout() {
         <Route path="/appointment/:id" element={<Appointment />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/doctors" element={<Doctors />} />
-        <Route path="/doctors/:speciality" element={<Doctors />} />
         <Route path="/login" element={<Login />} />
         <Route path="/createaccount" element={<CreateAccount />} />
         <Route path="/myprofile" element={<MyProfile />} />
