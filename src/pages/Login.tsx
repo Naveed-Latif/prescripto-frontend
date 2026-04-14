@@ -1,5 +1,10 @@
+import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
+import axios from "axios";
+ import {  toast } from 'react-toastify';
+ 
 
 
 type FormValues = {
@@ -9,6 +14,8 @@ type FormValues = {
 
 export default function Login() {
       const navigate = useNavigate()
+      const { token,setToken, backendurl } = useContext(AppContext)
+      
 
   const {
     register,
@@ -16,10 +23,33 @@ export default function Login() {
     formState: { errors },
   } = useForm<FormValues>();
 
-  const onSubmit = (data: FormValues) => {
-    
-    console.log(data);
+  const onSubmit = async (data: FormValues) => {
+    try {
+      const response = await axios.post(`${backendurl}/auth/login`, {
+        email: data.email,
+        password: data.password,
+      });
+      if (response.data.success) {
+        localStorage.setItem("token", response.data.token);
+        setToken(response.data.token);
+        toast.success("Login successful");
+      } else {
+        toast.error("Invalid credentials")
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Login error:", error.message);
+      } else {
+        console.error("Login error:", String(error));
+      }
+      toast.error("Something went wrong. Please try again.");
+    }
   };
+  useEffect(()=>{
+    if(token && token.length > 0){
+      navigate("/");
+    }
+  },[token])
 
    return (
     <div className="min-h-[80vh] flex items-center justify-center bg-white ">
@@ -76,7 +106,7 @@ export default function Login() {
             type="submit"
             className="w-full py-3 bg-indigo-500 hover:bg-indigo-600 text-white font-medium rounded-md text-sm tracking-wide transition duration-200"
           >
-            Create account
+            Login
           </button>
         </form>
 
@@ -84,7 +114,7 @@ export default function Login() {
         <p className="text-center text-sm text-gray-400 mt-5">
           Create an new account?{" "}
           <a onClick={()=>{navigate('/createaccount')}}  className="text-indigo-500 hover:text-indigo-600 font-medium cursor-pointer">
-            Login
+           Create Account
           </a>
         </p>
       </div>
