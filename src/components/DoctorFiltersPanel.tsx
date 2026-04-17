@@ -91,7 +91,7 @@ function DoctorFiltersPanel({
         {hasActiveFilters && (
           <button
             onClick={onClearAll}
-            className="text-sm font-medium text-indigo-500 hover:text-indigo-700 transition"
+            className="text-sm font-medium cursor-pointer text-indigo-500 hover:text-indigo-700 transition"
           >
             Reset
           </button>

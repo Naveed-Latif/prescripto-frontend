@@ -91,12 +91,21 @@ function Navbar() {
             </div>
           </div>
         ) : (
+          <div className="flex gap-2">
+            <button
+            onClick={() => navigate("/login")}
+            className=" text-black border-b border-gray-300 px-3 cursor-pointer  font-light hidden md:block"
+          >
+            Login
+          </button>
           <button
             onClick={() => navigate("/createaccount")}
             className="bg-primary text-white px-8 py-3 cursor-pointer border-l rounded-full font-light hidden md:block"
           >
-            create account
+            Create Account
           </button>
+          
+          </div>
         )}
         <img
           onClick={() => setShowMenu(true)}

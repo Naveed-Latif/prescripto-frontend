@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import axios from "axios";
@@ -37,6 +37,7 @@ function MyAppointments() {
     fromDate: "",
     toDate: "",
   });
+  const hasFetched = useRef(false);
 
   //  --handle page change--
   const handlePageChange = (page: number) => {
@@ -98,7 +99,6 @@ function MyAppointments() {
       if (response.data.status == 200) {
         setAppointments([...response.data.appointments]);
         setTotalPages(response.data.pagination?.totalPages || 1);
-        toast.success("Appointments fetched successfully");
       } else {
         toast.error("Failed to fetch appointments");
       }
@@ -164,12 +164,14 @@ function MyAppointments() {
       toast.error("Failed to load doctors list");
     }
   };
-
   useEffect(() => {
-    if (filterPanelOpen) {
+    if (filterPanelOpen && !hasFetched.current) {
       fetchDoctorsList();
+      hasFetched.current = true;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterPanelOpen]);
+
   const activeFilterCount = [
     filters.statuses.length > 0 ? "status" : "",
     filters.doctorIds.length > 0 ? "doctor" : "",
@@ -227,10 +229,7 @@ function MyAppointments() {
           <div>
             <img
               className="w-36 bg-[#EAEFFF]"
-              src={
-                appointment.doctor.profile.profileImage ??
-                dummyDoc
-              }
+              src={appointment.doctor.profile.profileImage ?? dummyDoc}
               alt="Doc Img"
             />
           </div>

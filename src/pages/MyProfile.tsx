@@ -87,9 +87,9 @@ export default function MyProfile() {
           }
         }
         setUserData(user);
-        toast.success("User data updated successfully");
+        toast.success("Profile updated successfully");
       } else {
-        toast.error("Failed to update user data");
+        toast.error("Failed to update profile");
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
